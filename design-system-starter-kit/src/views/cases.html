@@ -1,0 +1,220 @@
+{#
+  Cattle vaccinations — work queue
+  A single list of animals (by ear tag). Select rows and "Mark N as vaccinated"
+  to apply one set of batch details to all (a list-view Screen Flow over the
+  selection). No separate Case object/reference — the vaccination is just a
+  child record on the animal.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<div class="slds-p-around_medium">
+
+  <!-- Success toast after a mass "mark as vaccinated" -->
+  <div id="bulk-toast" class="slds-notify_container slds-is-relative slds-m-bottom_small slds-hide">
+    <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+      <span class="slds-assistive-text">success</span>
+      <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg></span>
+      <div class="slds-notify__content"><h2 class="slds-text-heading_small" id="bulk-toast-msg">Cattle marked as vaccinated.</h2></div>
+      <div class="slds-notify__close"><button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="document.getElementById('bulk-toast').classList.add('slds-hide')"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button></div>
+    </div>
+  </div>
+
+  <!-- Object-home header -->
+  <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_x-small">
+    <div>
+      <h1 class="slds-text-heading_large slds-text-color_default">Cattle vaccinations</h1>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small" id="queue-meta"></p>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-center" style="gap:0.5rem;">
+      <button id="bulk-vax-btn" class="slds-button slds-button_neutral" onclick="markSelected()" disabled>Mark as vaccinated</button>
+      <div class="slds-form-element" style="width:16rem;">
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+          <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg></span>
+          <input type="search" class="slds-input" placeholder="Search by ear tag..." oninput="filterText(this.value)" />
+        </div>
+      </div>
+      <div class="apha-toolbar">
+        {% for ic in ['settings','table','edit','refresh','chart','filterList'] %}
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="{{ ic }}"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#{{ ic }}"></use></svg><span class="slds-assistive-text">{{ ic }}</span></button>
+        {% endfor %}
+      </div>
+      <a class="slds-button slds-button_brand" href="/schedule-vaccination.html">
+        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#add"></use></svg>Log a Vaccination
+      </a>
+    </div>
+  </div>
+
+  <article class="slds-card">
+    <!-- List-view filter tabs (by TB Vax status) -->
+    <div class="slds-card__body slds-p-horizontal_small slds-border_bottom">
+      <ul class="slds-tabs_default__nav" role="tablist" id="filter-tabs">
+        <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="All" onclick="setFilter(this)">All items</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="Due Soon" onclick="setFilter(this)">Due soon</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="Overdue" onclick="setFilter(this)">Overdue</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="Vaccinated" onclick="setFilter(this)">Vaccinated</a></li>
+      </ul>
+    </div>
+
+    <!-- Tabular data with ordering -->
+    <div class="slds-card__body">
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout slds-table_striped apha-table" role="grid" aria-label="Cattle vaccinations">
+        <thead>
+          <tr class="slds-line-height_reset">
+            <th class="slds-text-align_right" scope="col" style="width:3.25rem;">
+              <div class="slds-th__action slds-th__action_form">
+                <div class="slds-checkbox">
+                  <input type="checkbox" id="select-all" onchange="toggleAll(this)" tabindex="-1" />
+                  <label class="slds-checkbox__label" for="select-all"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select All</span></label>
+                </div>
+              </div>
+            </th>
+            {% set cols = [
+              { key: 'tag', label: 'Ear Tag Number' },
+              { key: 'status', label: 'TB Vax' },
+              { key: 'breed', label: 'Breed' },
+              { key: 'due', label: 'Due' }
+            ] %}
+            {% for col in cols %}
+            <th aria-sort="none" class="slds-is-sortable" scope="col" id="th-{{ col.key }}">
+              <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick="sortBy('{{ col.key }}')">
+                <span class="slds-assistive-text">Sort by: </span>
+                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                  <span class="slds-truncate slds-text-title_caps" title="{{ col.label }}">{{ col.label }}</span>
+                  <span class="slds-icon_container"><svg class="slds-icon slds-icon-text-default slds-is-sortable__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></span>
+                </div>
+              </a>
+            </th>
+            {% endfor %}
+            <th class="slds-cell_action-mode" scope="col" style="width:3.25rem;"><div class="slds-truncate slds-assistive-text">Actions</div></th>
+          </tr>
+        </thead>
+        <tbody id="queue-tbody"></tbody>
+      </table>
+    </div>
+  </article>
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+  VaxStore.apply(cattle);
+
+  var filter = 'All', textq = '', sortKey = null, sortDir = 1;
+
+  function statusBadge(status) {
+    var map = { 'Vaccinated': 'green', 'Due Soon': 'amber', 'Overdue': 'red', 'Not Vaccinated': 'neutral' };
+    return '<span class="apha-pill apha-pill_' + (map[status] || 'neutral') + '">' + status + '</span>';
+  }
+  function fmtTag(tag) { return tag.slice(0, -4) + '<strong>' + tag.slice(-4) + '</strong>'; }
+
+  function setFilter(link) {
+    filter = link.getAttribute('data-filter');
+    document.querySelectorAll('#filter-tabs .slds-tabs_default__item').forEach(function (li) { li.classList.remove('slds-is-active'); });
+    link.parentNode.classList.add('slds-is-active');
+    render();
+  }
+  function filterText(q) { textq = (q || '').toLowerCase(); render(); }
+
+  function sortBy(key) {
+    if (sortKey === key) { sortDir = -sortDir; } else { sortKey = key; sortDir = 1; }
+    ['tag','status','breed','due'].forEach(function (k) {
+      var th = document.getElementById('th-' + k); th.setAttribute('aria-sort', 'none'); th.classList.remove('slds-is-sorted','slds-is-sorted_asc','slds-is-sorted_desc');
+    });
+    var th = document.getElementById('th-' + key);
+    th.classList.add('slds-is-sorted', sortDir === 1 ? 'slds-is-sorted_asc' : 'slds-is-sorted_desc');
+    th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+    render();
+  }
+  function sortVal(c, key) { return (key === 'due') ? new Date(c.due).getTime() : (c[key] || '').toString().toLowerCase(); }
+
+  function render() {
+    var rows = cattle.filter(function (c) {
+      var okF = filter === 'All' || c.status === filter;
+      var okT = !textq || c.tag.toLowerCase().indexOf(textq) !== -1;
+      return okF && okT;
+    });
+    if (sortKey) rows = rows.slice().sort(function (a, b) {
+      var va = sortVal(a, sortKey), vb = sortVal(b, sortKey);
+      return va < vb ? -sortDir : va > vb ? sortDir : 0;
+    });
+    document.getElementById('queue-tbody').innerHTML = rows.map(function (c) {
+      var idx = cattle.indexOf(c);
+      return '<tr class="cattle-row" aria-selected="false" onclick="goRecord(' + idx + ')">' +
+        '<td class="slds-text-align_right" role="gridcell" onclick="event.stopPropagation()"><div class="slds-checkbox"><input type="checkbox" id="cb-' + idx + '" onchange="rowSelect(this)" tabindex="-1" /><label class="slds-checkbox__label" for="cb-' + idx + '"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select row</span></label></div></td>' +
+        '<th scope="row" data-label="Ear Tag Number"><div class="slds-truncate"><a href="/cow.html?i=' + idx + '">' + fmtTag(c.tag) + '</a></div></th>' +
+        '<td role="gridcell" data-label="TB Vax"><div class="slds-truncate">' + statusBadge(c.status) + '</div></td>' +
+        '<td role="gridcell" data-label="Breed"><div class="slds-truncate">' + c.breed + '</div></td>' +
+        '<td role="gridcell" data-label="Due"><div class="slds-truncate">' + (c.due || 'n/a') + '</div></td>' +
+        '<td role="gridcell" class="slds-cell_action-mode" onclick="event.stopPropagation()" style="position:relative;">' +
+          '<button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Show actions" onclick="toggleMenu(' + idx + ')"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg><span class="slds-assistive-text">Show actions for row</span></button>' +
+          '<div id="menu-' + idx + '" class="slds-dropdown slds-dropdown_right slds-hide" style="position:absolute;right:0;top:100%;z-index:10;"><ul class="slds-dropdown__list" role="menu">' +
+            '<li class="slds-dropdown__item" role="presentation"><a href="/cow.html?i=' + idx + '" role="menuitem"><span class="slds-truncate">View Details</span></a></li>' +
+            '<li class="slds-dropdown__item" role="presentation"><a href="/schedule-vaccination.html?i=' + idx + '" role="menuitem"><span class="slds-truncate">Log a Vaccination</span></a></li>' +
+          '</ul></div>' +
+        '</td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('queue-meta').textContent = rows.length + ' items • Sorted by Due • Filtered by All cattle • Updated a few seconds ago';
+    var sa = document.getElementById('select-all'); if (sa) { sa.checked = false; sa.indeterminate = false; }
+    updateBulkButton();
+  }
+
+  function goRecord(i) { window.location.href = '/cow.html?i=' + i; }
+
+  function toggleAll(box) {
+    document.querySelectorAll('#queue-tbody input[type=checkbox]').forEach(function (cb) { cb.checked = box.checked; cb.closest('tr').setAttribute('aria-selected', box.checked); });
+    box.indeterminate = false; updateBulkButton();
+  }
+  function rowSelect(box) {
+    box.closest('tr').setAttribute('aria-selected', box.checked);
+    var all = Array.prototype.slice.call(document.querySelectorAll('#queue-tbody input[type=checkbox]'));
+    var checked = all.filter(function (cb) { return cb.checked; }).length;
+    var sa = document.getElementById('select-all'); sa.checked = checked === all.length; sa.indeterminate = checked > 0 && checked < all.length;
+    updateBulkButton();
+  }
+
+  // ---- Bulk "mark as vaccinated" ----
+  function selectedIdxs() {
+    return Array.prototype.slice.call(document.querySelectorAll('#queue-tbody input[type=checkbox]'))
+      .filter(function (cb) { return cb.checked; }).map(function (cb) { return parseInt(cb.id.replace('cb-', ''), 10); });
+  }
+  function updateBulkButton() {
+    var n = selectedIdxs().length, btn = document.getElementById('bulk-vax-btn');
+    if (!btn) return; btn.disabled = n === 0; btn.textContent = n ? ('Mark ' + n + ' as vaccinated') : 'Mark as vaccinated';
+  }
+  function markSelected() {
+    var tags = selectedIdxs().map(function (i) { return cattle[i].tag; });
+    if (!tags.length) return;
+    try { sessionStorage.setItem('bovinetb_selection', JSON.stringify(tags)); sessionStorage.setItem('bovinetb_return', '/cases.html'); } catch (e) {}
+    window.location.href = '/schedule-vaccination.html?mass=1';
+  }
+
+  function toggleMenu(idx) {
+    var m = document.getElementById('menu-' + idx); var wasHidden = m.classList.contains('slds-hide');
+    document.querySelectorAll('#queue-tbody .slds-dropdown').forEach(function (d) { d.classList.add('slds-hide'); });
+    if (wasHidden) m.classList.remove('slds-hide');
+  }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest('.slds-cell_action-mode')) document.querySelectorAll('#queue-tbody .slds-dropdown').forEach(function (d) { d.classList.add('slds-hide'); });
+  });
+
+  // Success toast when returning from the mass flow.
+  (function () {
+    var m = window.location.search.match(/[?&]logged=(\d+)/);
+    if (m) { document.getElementById('bulk-toast-msg').textContent = m[1] + ' cattle marked as vaccinated.'; document.getElementById('bulk-toast').classList.remove('slds-hide'); }
+  })();
+
+  // Deep-link from a home tile, e.g. /cases.html?filter=Overdue
+  (function () {
+    var fm = window.location.search.match(/[?&]filter=([^&]+)/);
+    if (fm) {
+      var fl = document.querySelector('#filter-tabs [data-filter="' + decodeURIComponent(fm[1]) + '"]');
+      if (fl) { filter = fl.getAttribute('data-filter'); document.querySelectorAll('#filter-tabs .slds-tabs_default__item').forEach(function (li) { li.classList.remove('slds-is-active'); }); fl.parentNode.classList.add('slds-is-active'); }
+    }
+  })();
+
+  render();
+</script>
+
+{% endblock %}

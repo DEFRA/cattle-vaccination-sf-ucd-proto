@@ -1,0 +1,5 @@
+// Data injected into cow.html (merged with shared.json).
+// A Cow is a Cattle record, so the Cattle tab stays active.
+{
+  "activeNav": "cattle"
+}

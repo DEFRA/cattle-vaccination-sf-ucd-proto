@@ -1,0 +1,136 @@
+{#
+  Animal movement license applications — List
+  Matches the supplied design: object-home header + toolbar, list-view filter
+  tabs, and a wide data table with licence-type tags, priority/status pills and
+  nation flags. (Coloured pills + flags are the custom-CSS parts.)
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<div class="slds-p-around_medium">
+
+  <!-- Object-home header -->
+  <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-m-bottom_x-small">
+    <div>
+      <h1 class="slds-text-heading_large slds-text-color_default">Animal movement license applications</h1>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">130 items • Sorted by Date • Filtered by All Applications • Updated a few seconds ago</p>
+    </div>
+    <div class="slds-grid slds-grid_vertical-align-center" style="gap:0.5rem;">
+      <div class="slds-form-element" style="width:18rem;">
+        <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+          <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg></span>
+          <input type="search" class="slds-input" placeholder="Search..." oninput="filterText(this.value)" />
+        </div>
+      </div>
+      <div class="apha-toolbar">
+        {% for ic in ['settings','table','edit','refresh','chart','filterList'] %}
+        <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="{{ ic }}"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#{{ ic }}"></use></svg><span class="slds-assistive-text">{{ ic }}</span></button>
+        {% endfor %}
+      </div>
+      <button class="slds-button slds-button_brand">
+        <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#add"></use></svg>Add new application
+      </button>
+    </div>
+  </div>
+
+  <article class="slds-card">
+    <!-- Filter list-view tabs -->
+    <div class="slds-card__body slds-p-horizontal_small slds-border_bottom">
+      <ul class="slds-tabs_default__nav" role="tablist" id="filter-tabs">
+        <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" onclick="setFilter(this,'All')">All items</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" onclick="setFilter(this,'Validate')">Awaiting further info</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" onclick="setFilter(this,'Risk assess')">Awaiting issue</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" onclick="setFilter(this,'Receipt')">Future pending issue</a></li>
+        <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" onclick="setFilter(this,'All')">Management view</a></li>
+      </ul>
+    </div>
+
+    <div class="slds-card__body">
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout apha-table" aria-label="License applications">
+        <thead>
+          <tr class="slds-line-height_reset">
+            {% set cols = [['ref','Reference'],['type','License'],['priority','Priority'],['requested','Requested'],['earliest','Earliest'],['reqCph','CPH of requester'],['origin','Origin name'],['originCph','Origin CPH'],['destCph','Destination CPH'],['status','Status'],['assignedTo','Assigned to']] %}
+            {% for c in cols %}
+            <th aria-sort="none" class="slds-is-sortable" scope="col" id="th-{{ c[0] }}">
+              <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick="sortBy('{{ c[0] }}')">
+                <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate">
+                  <span class="slds-truncate slds-text-title_caps" title="{{ c[1] }}">{{ c[1] }}</span>
+                  <span class="slds-icon_container"><svg class="slds-icon slds-icon-text-default slds-is-sortable__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></span>
+                </div>
+              </a>
+            </th>
+            {% endfor %}
+            <th class="slds-cell_action-mode" scope="col" style="width:2.5rem;"><div class="slds-assistive-text">Actions</div></th>
+          </tr>
+        </thead>
+        <tbody id="lic-tbody"></tbody>
+      </table>
+    </div>
+  </article>
+</div>
+
+<script>
+  var licenses = {{ licenses | dump | safe }};
+
+  var filter = 'All', textq = '', sortKey = null, sortDir = 1;
+
+  function flag(n) {
+    if (n === 'eng') return '<svg class="apha-flag" viewBox="0 0 18 12"><rect width="18" height="12" fill="#fff"/><rect x="7" width="4" height="12" fill="#ce1124"/><rect y="4" width="18" height="4" fill="#ce1124"/></svg>';
+    if (n === 'sco') return '<svg class="apha-flag" viewBox="0 0 18 12"><rect width="18" height="12" fill="#005eb8"/><path d="M0 0 L18 12 M18 0 L0 12" stroke="#fff" stroke-width="2.4"/></svg>';
+    if (n === 'wal') return '<svg class="apha-flag" viewBox="0 0 18 12"><rect width="18" height="6" fill="#fff"/><rect y="6" width="18" height="6" fill="#00ab39"/><rect x="6" y="3" width="6" height="5" rx="1" fill="#d4351c"/></svg>';
+    return '';
+  }
+  function cph(v, n) { return v ? (v + ' ' + flag(n)) : ''; }
+
+  function statusPill(s) {
+    var map = { 'Issued': 'green', 'Risk assess': 'amber', 'Validate': 'amber', 'Rejected': 'red', 'Revoked': 'red' };
+    if (s === 'Receipt') return '<span class="apha-tag">' + s + '</span>';
+    var v = map[s] || 'neutral';
+    return '<span class="apha-pill apha-pill_' + v + '">' + s + '</span>';
+  }
+
+  function sortBy(key) {
+    if (sortKey === key) sortDir = -sortDir; else { sortKey = key; sortDir = 1; }
+    render();
+  }
+  function setFilter(link, f) {
+    filter = f;
+    document.querySelectorAll('#filter-tabs .slds-tabs_default__item').forEach(function (li) { li.classList.remove('slds-is-active'); });
+    link.parentNode.classList.add('slds-is-active');
+    render();
+  }
+  function filterText(q) { textq = (q || '').toLowerCase(); render(); }
+
+  function render() {
+    var rows = licenses.filter(function (r) {
+      var okF = filter === 'All' || r.status === filter;
+      var okT = !textq || (r.ref + ' ' + r.origin + ' ' + r.assignedTo + ' ' + r.type).toLowerCase().indexOf(textq) !== -1;
+      return okF && okT;
+    });
+    if (sortKey) rows = rows.slice().sort(function (a, b) {
+      var va = (a[sortKey] || '').toString().toLowerCase(), vb = (b[sortKey] || '').toString().toLowerCase();
+      return va < vb ? -sortDir : va > vb ? sortDir : 0;
+    });
+    document.getElementById('lic-tbody').innerHTML = rows.map(function (r) {
+      return '<tr>' +
+        '<th scope="row" data-label="Reference"><div class="slds-truncate"><a href="javascript:void(0);">' + r.ref + '</a></div></th>' +
+        '<td data-label="License"><div class="slds-truncate"><span class="apha-tag">' + r.type + '</span></div></td>' +
+        '<td data-label="Priority"><div class="slds-truncate">' + (r.priority ? '<span class="apha-pill apha-pill_red">' + r.priority + '</span>' : '') + '</div></td>' +
+        '<td data-label="Requested"><div class="slds-truncate">' + r.requested + '</div></td>' +
+        '<td data-label="Earliest"><div class="slds-truncate">' + (r.earliest || '') + '</div></td>' +
+        '<td data-label="CPH of requester"><div class="slds-truncate">' + cph(r.reqCph, r.reqNation) + '</div></td>' +
+        '<td data-label="Origin name"><div class="slds-truncate">' + r.origin + '</div></td>' +
+        '<td data-label="Origin CPH"><div class="slds-truncate">' + cph(r.originCph, r.originNation) + '</div></td>' +
+        '<td data-label="Destination CPH"><div class="slds-truncate">' + cph(r.destCph, r.destNation) + '</div></td>' +
+        '<td data-label="Status"><div class="slds-truncate">' + statusPill(r.status) + '</div></td>' +
+        '<td data-label="Assigned to"><div class="slds-truncate">' + r.assignedTo + '</div></td>' +
+        '<td class="slds-cell_action-mode"><button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Show actions"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg><span class="slds-assistive-text">Actions</span></button></td>' +
+      '</tr>';
+    }).join('');
+  }
+
+  render();
+</script>
+
+{% endblock %}

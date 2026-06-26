@@ -1,0 +1,11 @@
+// Data injected into schedule-vaccination.html (merged with shared.json).
+{
+  "activeNav": "vaccinations",
+  // "Who vaccinated" picklist — current user first, then vets.
+  "vaccinators": [
+    { "label": "I did (Dave)", "value": "Dave Cunningham" },
+    "A. Patel MRCVS",
+    "J. Hughes MRCVS",
+    "S. Okafor MRCVS"
+  ]
+}

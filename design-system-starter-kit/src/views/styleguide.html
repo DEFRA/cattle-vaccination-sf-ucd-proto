@@ -1,0 +1,815 @@
+{#
+  Styleguide / Kitchen Sink
+  A single-page reference of standard SLDS components and style utilities.
+  Everything here uses standard Lightning Design System markup and the kit's
+  local SLDS assets and icon sprites — no custom components.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<style>
+  /* Reference-page helpers only (layout of the guide itself, not components). */
+  .sg-toc { position: sticky; top: 0; align-self: flex-start; max-height: 100%; overflow: auto; }
+  .sg-section { scroll-margin-top: 1rem; }
+  .sg-swatch { height: 3rem; border-radius: .25rem; border: 1px solid rgba(0,0,0,.1); }
+  .sg-tile { border: 1px dashed #c9c9c9; border-radius: .25rem; }
+</style>
+
+<div class="slds-p-around_medium">
+
+  <!-- Page banner -->
+  <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+    <h1 class="slds-text-heading_large">Design System Styleguide</h1>
+    <p class="slds-text-body_regular slds-m-top_x-small slds-text-color_weak">
+      A kitchen-sink reference of standard Salesforce Lightning components and style utilities, all on one page.
+    </p>
+  </div>
+
+  <div class="slds-grid slds-gutters">
+
+    <!-- ============ Sticky table of contents (Vertical Navigation) ============ -->
+    <div class="slds-col slds-size_1-of-6 sg-toc">
+      <nav class="slds-nav-vertical" aria-label="Styleguide sections">
+        <div class="slds-nav-vertical__section">
+          <h2 class="slds-nav-vertical__title slds-text-title_caps">Foundations</h2>
+          <ul>
+            <li class="slds-nav-vertical__item"><a href="#typography" class="slds-nav-vertical__action">Typography</a></li>
+            <li class="slds-nav-vertical__item"><a href="#colors" class="slds-nav-vertical__action">Color &amp; Themes</a></li>
+            <li class="slds-nav-vertical__item"><a href="#grid" class="slds-nav-vertical__action">Grid</a></li>
+            <li class="slds-nav-vertical__item"><a href="#icons" class="slds-nav-vertical__action">Icons</a></li>
+          </ul>
+        </div>
+        <div class="slds-nav-vertical__section">
+          <h2 class="slds-nav-vertical__title slds-text-title_caps">Elements</h2>
+          <ul>
+            <li class="slds-nav-vertical__item"><a href="#buttons" class="slds-nav-vertical__action">Buttons</a></li>
+            <li class="slds-nav-vertical__item"><a href="#badges" class="slds-nav-vertical__action">Badges</a></li>
+            <li class="slds-nav-vertical__item"><a href="#avatars" class="slds-nav-vertical__action">Avatars</a></li>
+            <li class="slds-nav-vertical__item"><a href="#pills" class="slds-nav-vertical__action">Pills</a></li>
+            <li class="slds-nav-vertical__item"><a href="#breadcrumbs" class="slds-nav-vertical__action">Breadcrumbs</a></li>
+            <li class="slds-nav-vertical__item"><a href="#progress" class="slds-nav-vertical__action">Progress</a></li>
+            <li class="slds-nav-vertical__item"><a href="#spinners" class="slds-nav-vertical__action">Spinners</a></li>
+          </ul>
+        </div>
+        <div class="slds-nav-vertical__section">
+          <h2 class="slds-nav-vertical__title slds-text-title_caps">Layout</h2>
+          <ul>
+            <li class="slds-nav-vertical__item"><a href="#cards" class="slds-nav-vertical__action">Cards</a></li>
+            <li class="slds-nav-vertical__item"><a href="#tabs" class="slds-nav-vertical__action">Tabs</a></li>
+            <li class="slds-nav-vertical__item"><a href="#accordion" class="slds-nav-vertical__action">Accordion</a></li>
+            <li class="slds-nav-vertical__item"><a href="#tables" class="slds-nav-vertical__action">Data Tables</a></li>
+            <li class="slds-nav-vertical__item"><a href="#page-headers" class="slds-nav-vertical__action">Page Headers</a></li>
+            <li class="slds-nav-vertical__item"><a href="#lists" class="slds-nav-vertical__action">Description Lists</a></li>
+          </ul>
+        </div>
+        <div class="slds-nav-vertical__section">
+          <h2 class="slds-nav-vertical__title slds-text-title_caps">Forms</h2>
+          <ul>
+            <li class="slds-nav-vertical__item"><a href="#inputs" class="slds-nav-vertical__action">Inputs</a></li>
+            <li class="slds-nav-vertical__item"><a href="#checkboxes" class="slds-nav-vertical__action">Checkbox / Radio / Toggle</a></li>
+            <li class="slds-nav-vertical__item"><a href="#select" class="slds-nav-vertical__action">Select &amp; Combobox</a></li>
+            <li class="slds-nav-vertical__item"><a href="#slider" class="slds-nav-vertical__action">Slider &amp; File</a></li>
+          </ul>
+        </div>
+        <div class="slds-nav-vertical__section">
+          <h2 class="slds-nav-vertical__title slds-text-title_caps">Feedback</h2>
+          <ul>
+            <li class="slds-nav-vertical__item"><a href="#alerts" class="slds-nav-vertical__action">Alerts</a></li>
+            <li class="slds-nav-vertical__item"><a href="#toasts" class="slds-nav-vertical__action">Toasts</a></li>
+            <li class="slds-nav-vertical__item"><a href="#notifications" class="slds-nav-vertical__action">Scoped Notifications</a></li>
+            <li class="slds-nav-vertical__item"><a href="#modals" class="slds-nav-vertical__action">Modal</a></li>
+            <li class="slds-nav-vertical__item"><a href="#popovers" class="slds-nav-vertical__action">Popover &amp; Tooltip</a></li>
+            <li class="slds-nav-vertical__item"><a href="#illustration" class="slds-nav-vertical__action">Empty State</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <!-- ============ Content ============ -->
+    <div class="slds-col slds-size_5-of-6">
+
+      <!-- ===== TYPOGRAPHY ===== -->
+      <section id="typography" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Typography</h2>
+        <p class="slds-text-heading_large">Heading Large</p>
+        <p class="slds-text-heading_medium">Heading Medium</p>
+        <p class="slds-text-heading_small">Heading Small</p>
+        <p class="slds-text-title_caps slds-m-top_x-small">Title Caps</p>
+        <p class="slds-text-body_regular slds-m-top_x-small">Body regular — the quick brown fox jumps over the lazy dog.</p>
+        <p class="slds-text-body_small">Body small — the quick brown fox jumps over the lazy dog.</p>
+        <p class="slds-m-top_x-small">
+          <span class="slds-text-color_success">Success text</span> ·
+          <span class="slds-text-color_warning">Warning text</span> ·
+          <span class="slds-text-color_error">Error text</span> ·
+          <span class="slds-text-color_weak">Weak text</span> ·
+          <strong>Bold</strong> · <em>Italic</em> · <a href="javascript:void(0);">Hyperlink</a>
+        </p>
+      </section>
+
+      <!-- ===== COLOR & THEMES ===== -->
+      <section id="colors" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Color &amp; Themes</h2>
+        <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_medium">
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_default"></div><p class="slds-text-body_small slds-m-top_xx-small">Default</p>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_shade"></div><p class="slds-text-body_small slds-m-top_xx-small">Shade</p>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_info"></div><p class="slds-text-body_small slds-m-top_xx-small">Info</p>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_success"></div><p class="slds-text-body_small slds-m-top_xx-small">Success</p>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_warning"></div><p class="slds-text-body_small slds-m-top_xx-small">Warning</p>
+          </div>
+          <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-6 slds-m-bottom_x-small">
+            <div class="sg-swatch slds-theme_error"></div><p class="slds-text-body_small slds-m-top_xx-small">Error</p>
+          </div>
+        </div>
+        <div class="slds-grid slds-gutters slds-wrap">
+          <div class="slds-col"><div class="slds-box slds-theme_default">Box · default</div></div>
+          <div class="slds-col"><div class="slds-box slds-theme_shade">Box · shade</div></div>
+          <div class="slds-col"><div class="slds-box slds-box_xx-small slds-theme_alt-inverse slds-text-color_inverse">Box · alt-inverse</div></div>
+        </div>
+      </section>
+
+      <!-- ===== GRID ===== -->
+      <section id="grid" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Grid</h2>
+        <div class="slds-grid slds-gutters slds-m-bottom_small">
+          <div class="slds-col"><div class="sg-tile slds-p-around_small slds-text-align_center">1 of 3</div></div>
+          <div class="slds-col"><div class="sg-tile slds-p-around_small slds-text-align_center">1 of 3</div></div>
+          <div class="slds-col"><div class="sg-tile slds-p-around_small slds-text-align_center">1 of 3</div></div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-bottom_small">
+          <div class="slds-col slds-size_1-of-4"><div class="sg-tile slds-p-around_small slds-text-align_center">1/4</div></div>
+          <div class="slds-col slds-size_3-of-4"><div class="sg-tile slds-p-around_small slds-text-align_center">3/4</div></div>
+        </div>
+        <div class="slds-grid slds-grid_align-spread sg-tile slds-p-around_x-small">
+          <span>align-spread start</span><span>middle</span><span>end</span>
+        </div>
+      </section>
+
+      <!-- ===== ICONS ===== -->
+      <section id="icons" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Icons</h2>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">Utility (sizes)</p>
+        <div class="slds-grid slds-grid_vertical-align-center slds-m-bottom_medium">
+          <span class="slds-icon_container slds-icon-utility-settings slds-m-right_small">
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use></svg>
+          </span>
+          <span class="slds-icon_container slds-icon-utility-settings slds-m-right_small">
+            <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use></svg>
+          </span>
+          <span class="slds-icon_container slds-icon-utility-settings slds-m-right_small">
+            <svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use></svg>
+          </span>
+          <span class="slds-icon_container slds-icon-utility-settings">
+            <svg class="slds-icon slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use></svg>
+          </span>
+        </div>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">Standard</p>
+        <div class="slds-grid slds-m-bottom_medium">
+          <span class="slds-icon_container slds-icon-standard-account slds-m-right_small" title="Account"><svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg></span>
+          <span class="slds-icon_container slds-icon-standard-contact slds-m-right_small" title="Contact"><svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use></svg></span>
+          <span class="slds-icon_container slds-icon-standard-opportunity slds-m-right_small" title="Opportunity"><svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use></svg></span>
+          <span class="slds-icon_container slds-icon-standard-event" title="Event"><svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#event"></use></svg></span>
+        </div>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">Action &amp; Doctype</p>
+        <div class="slds-grid slds-grid_vertical-align-center">
+          <span class="slds-icon_container slds-icon-action-description slds-m-right_small" title="Description"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/action-sprite/svg/symbols.svg#description"></use></svg></span>
+          <span class="slds-icon_container slds-icon-action-share slds-m-right_large" title="Share"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/action-sprite/svg/symbols.svg#share"></use></svg></span>
+          <span class="slds-icon_container slds-m-right_small" title="PDF"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#pdf"></use></svg></span>
+          <span class="slds-icon_container" title="Excel"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/doctype-sprite/svg/symbols.svg#excel"></use></svg></span>
+        </div>
+      </section>
+
+      <!-- ===== BUTTONS ===== -->
+      <section id="buttons" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Buttons</h2>
+        <div class="slds-m-bottom_small">
+          <button class="slds-button slds-button_base">Base</button>
+          <button class="slds-button slds-button_neutral">Neutral</button>
+          <button class="slds-button slds-button_brand">Brand</button>
+          <button class="slds-button slds-button_outline-brand">Outline Brand</button>
+          <button class="slds-button slds-button_destructive">Destructive</button>
+          <button class="slds-button slds-button_text-destructive">Text Destructive</button>
+          <button class="slds-button slds-button_success">Success</button>
+          <button class="slds-button slds-button_neutral" disabled>Disabled</button>
+        </div>
+        <div class="slds-m-bottom_small">
+          <button class="slds-button slds-button_brand">
+            <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#download"></use></svg>
+            Icon Left
+          </button>
+          <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Settings">
+            <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#settings"></use></svg>
+            <span class="slds-assistive-text">Settings</span>
+          </button>
+          <button class="slds-button slds-button_icon slds-button_icon-brand" title="Add">
+            <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#add"></use></svg>
+            <span class="slds-assistive-text">Add</span>
+          </button>
+        </div>
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Button group</p>
+        <div class="slds-button-group" role="group">
+          <button class="slds-button slds-button_neutral">Refresh</button>
+          <button class="slds-button slds-button_neutral">Edit</button>
+          <button class="slds-button slds-button_neutral">Save</button>
+          <button class="slds-button slds-button_icon slds-button_icon-border-filled" title="More">
+            <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+            <span class="slds-assistive-text">More</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ===== BADGES ===== -->
+      <section id="badges" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Badges</h2>
+        <span class="slds-badge">Default</span>
+        <span class="slds-badge slds-theme_success">Success</span>
+        <span class="slds-badge slds-theme_warning">Warning</span>
+        <span class="slds-badge slds-theme_error">Error</span>
+        <span class="slds-badge slds-badge_inverse">Inverse</span>
+        <span class="slds-badge slds-badge_lightest">Lightest</span>
+        <span class="slds-badge slds-m-left_small">
+          <span class="slds-badge__icon slds-badge__icon_left">
+            <span class="slds-icon_container slds-icon-utility-moneybag slds-current-color">
+              <svg class="slds-icon slds-icon_xx-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#moneybag"></use></svg>
+            </span>
+          </span>With icon
+        </span>
+      </section>
+
+      <!-- ===== AVATARS ===== -->
+      <section id="avatars" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Avatars</h2>
+        <div class="slds-grid slds-grid_vertical-align-center">
+          <span class="slds-avatar slds-avatar_x-small slds-m-right_small"><abbr class="slds-avatar__initials slds-icon-standard-account" title="DC">DC</abbr></span>
+          <span class="slds-avatar slds-avatar_small slds-m-right_small"><abbr class="slds-avatar__initials slds-icon-standard-account" title="DC">DC</abbr></span>
+          <span class="slds-avatar slds-avatar_medium slds-m-right_small"><abbr class="slds-avatar__initials slds-icon-standard-account" title="DC">DC</abbr></span>
+          <span class="slds-avatar slds-avatar_large slds-m-right_large"><abbr class="slds-avatar__initials slds-icon-standard-account" title="DC">DC</abbr></span>
+          <span class="slds-avatar slds-avatar_circle slds-avatar_medium slds-m-right_small"><abbr class="slds-avatar__initials slds-icon-standard-contact" title="AV">AV</abbr></span>
+          <span class="slds-avatar slds-avatar_circle slds-avatar_medium">
+            <span class="slds-icon_container slds-icon-standard-user">
+              <svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#user"></use></svg>
+            </span>
+          </span>
+        </div>
+      </section>
+
+      <!-- ===== PILLS ===== -->
+      <section id="pills" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Pills</h2>
+        <div class="slds-pill_container">
+          <span class="slds-pill slds-m-right_xx-small">
+            <span class="slds-pill__label" title="Plain pill">Plain pill</span>
+            <button class="slds-button slds-button_icon slds-pill__remove" title="Remove">
+              <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg>
+              <span class="slds-assistive-text">Remove</span>
+            </button>
+          </span>
+          <span class="slds-pill">
+            <span class="slds-icon_container slds-icon-standard-account slds-pill__icon_container" title="Account">
+              <svg class="slds-icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg>
+            </span>
+            <span class="slds-pill__label" title="Pill with icon">Pill with icon</span>
+            <button class="slds-button slds-button_icon slds-pill__remove" title="Remove">
+              <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg>
+              <span class="slds-assistive-text">Remove</span>
+            </button>
+          </span>
+        </div>
+      </section>
+
+      <!-- ===== BREADCRUMBS ===== -->
+      <section id="breadcrumbs" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Breadcrumbs</h2>
+        <nav role="navigation" aria-label="Breadcrumbs">
+          <ol class="slds-breadcrumb slds-list_horizontal slds-wrap">
+            <li class="slds-breadcrumb__item"><a href="javascript:void(0);">Home</a></li>
+            <li class="slds-breadcrumb__item"><a href="javascript:void(0);">Cattle</a></li>
+            <li class="slds-breadcrumb__item"><a href="javascript:void(0);">UK582910001<strong>25</strong></a></li>
+          </ol>
+        </nav>
+      </section>
+
+      <!-- ===== PROGRESS ===== -->
+      <section id="progress" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Progress</h2>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Progress bar</p>
+        <div class="slds-progress-bar slds-m-bottom_medium" aria-valuemin="0" aria-valuemax="100" aria-valuenow="62" role="progressbar">
+          <span class="slds-progress-bar__value" style="width:62%;"><span class="slds-assistive-text">62% Complete</span></span>
+        </div>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Progress ring</p>
+        <div class="slds-progress-ring slds-progress-ring_large slds-m-bottom_medium">
+          <div class="slds-progress-ring__progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="75">
+            <svg viewBox="-1 -1 2 2"><path class="slds-progress-ring__path" d="M 1 0 A 1 1 0 1 1 0 -1 L 0 0 Z"></path></svg>
+          </div>
+          <div class="slds-progress-ring__content"><span class="slds-assistive-text">75% complete</span></div>
+        </div>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Progress indicator (path)</p>
+        <div class="slds-progress">
+          <ol class="slds-progress__list">
+            <li class="slds-progress__item slds-is-completed">
+              <button class="slds-button slds-button_icon slds-progress__marker slds-button_icon" title="Logged">
+                <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg>
+                <span class="slds-assistive-text">Logged - Completed</span>
+              </button>
+            </li>
+            <li class="slds-progress__item slds-is-completed">
+              <button class="slds-button slds-button_icon slds-progress__marker slds-button_icon" title="Reviewed">
+                <svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg>
+                <span class="slds-assistive-text">Reviewed - Completed</span>
+              </button>
+            </li>
+            <li class="slds-progress__item slds-is-active">
+              <button class="slds-button slds-button_icon slds-progress__marker" title="Scheduled"><span class="slds-assistive-text">Scheduled - Active</span></button>
+            </li>
+            <li class="slds-progress__item">
+              <button class="slds-button slds-button_icon slds-progress__marker" title="Administered"><span class="slds-assistive-text">Administered</span></button>
+            </li>
+          </ol>
+          <div class="slds-progress-bar slds-progress-bar_x-small" aria-valuemin="0" aria-valuemax="100" aria-valuenow="50" role="progressbar">
+            <span class="slds-progress-bar__value" style="width:50%;"><span class="slds-assistive-text">50% Complete</span></span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SPINNERS ===== -->
+      <section id="spinners" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Spinners</h2>
+        <div class="slds-grid slds-grid_vertical-align-center" style="gap:2rem; position:relative; min-height:3rem;">
+          <div style="position:relative; width:2rem; height:2rem;">
+            <div role="status" class="slds-spinner slds-spinner_x-small slds-spinner_brand"><span class="slds-assistive-text">Loading</span><div class="slds-spinner__dot-a"></div><div class="slds-spinner__dot-b"></div></div>
+          </div>
+          <div style="position:relative; width:3rem; height:3rem;">
+            <div role="status" class="slds-spinner slds-spinner_small slds-spinner_brand"><span class="slds-assistive-text">Loading</span><div class="slds-spinner__dot-a"></div><div class="slds-spinner__dot-b"></div></div>
+          </div>
+          <div style="position:relative; width:4rem; height:4rem;">
+            <div role="status" class="slds-spinner slds-spinner_medium"><span class="slds-assistive-text">Loading</span><div class="slds-spinner__dot-a"></div><div class="slds-spinner__dot-b"></div></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CARDS ===== -->
+      <section id="cards" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Cards</h2>
+        <article class="slds-card">
+          <div class="slds-card__header slds-grid">
+            <header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-standard-contact" title="Contacts">
+                  <svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#contact"></use></svg>
+                </span>
+              </div>
+              <div class="slds-media__body">
+                <h3 class="slds-card__header-title"><a href="javascript:void(0);" class="slds-card__header-link"><span>Contacts</span></a></h3>
+              </div>
+              <div class="slds-no-flex"><button class="slds-button slds-button_neutral">New</button></div>
+            </header>
+          </div>
+          <div class="slds-card__body slds-card__body_inner">Card body content goes here.</div>
+          <footer class="slds-card__footer"><a href="javascript:void(0);">View All</a></footer>
+        </article>
+      </section>
+
+      <!-- ===== TABS ===== -->
+      <section id="tabs" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Tabs</h2>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Default</p>
+        <div class="slds-tabs_default slds-m-bottom_medium" data-tabset="a">
+          <ul class="slds-tabs_default__nav" role="tablist">
+            <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="a-1" onclick="sgTab(this)">Item One</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="a-2" onclick="sgTab(this)">Item Two</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="a-3" onclick="sgTab(this)">Item Three</a></li>
+          </ul>
+          <div id="a-1" class="slds-tabs_default__content slds-show" role="tabpanel">Content for tab one.</div>
+          <div id="a-2" class="slds-tabs_default__content slds-hide" role="tabpanel">Content for tab two.</div>
+          <div id="a-3" class="slds-tabs_default__content slds-hide" role="tabpanel">Content for tab three.</div>
+        </div>
+
+        <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_xx-small">Scoped</p>
+        <div class="slds-tabs_scoped" data-tabset="b">
+          <ul class="slds-tabs_scoped__nav" role="tablist">
+            <li class="slds-tabs_scoped__item slds-is-active" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" data-tab="b-1" onclick="sgTab(this)">Tab A</a></li>
+            <li class="slds-tabs_scoped__item" role="presentation"><a class="slds-tabs_scoped__link" href="javascript:void(0);" role="tab" data-tab="b-2" onclick="sgTab(this)">Tab B</a></li>
+          </ul>
+          <div id="b-1" class="slds-tabs_scoped__content slds-show" role="tabpanel">Scoped content A.</div>
+          <div id="b-2" class="slds-tabs_scoped__content slds-hide" role="tabpanel">Scoped content B.</div>
+        </div>
+      </section>
+
+      <!-- ===== ACCORDION ===== -->
+      <section id="accordion" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Accordion</h2>
+        <ul class="slds-accordion">
+          <li class="slds-accordion__list-item">
+            <section class="slds-accordion__section slds-is-open">
+              <div class="slds-accordion__summary">
+                <h3 class="slds-accordion__summary-heading">
+                  <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-expanded="true" onclick="sgAccordion(this)">
+                    <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use></svg>
+                    <span class="slds-accordion__summary-content">Accordion section one</span>
+                  </button>
+                </h3>
+              </div>
+              <div class="slds-accordion__content">This is the body of the first accordion section.</div>
+            </section>
+          </li>
+          <li class="slds-accordion__list-item">
+            <section class="slds-accordion__section">
+              <div class="slds-accordion__summary">
+                <h3 class="slds-accordion__summary-heading">
+                  <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-expanded="false" onclick="sgAccordion(this)">
+                    <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use></svg>
+                    <span class="slds-accordion__summary-content">Accordion section two</span>
+                  </button>
+                </h3>
+              </div>
+              <div class="slds-accordion__content">This is the body of the second accordion section.</div>
+            </section>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ===== DATA TABLES ===== -->
+      <section id="tables" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Data Tables</h2>
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped" aria-label="Example">
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Name">Name</div></th>
+              <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Status">Status</div></th>
+              <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Amount">Amount</div></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><th scope="row"><div class="slds-truncate"><a href="javascript:void(0);">Acme</a></div></th><td><span class="slds-badge slds-theme_success">Active</span></td><td>£12,000</td></tr>
+            <tr><th scope="row"><div class="slds-truncate"><a href="javascript:void(0);">Vandelay</a></div></th><td><span class="slds-badge slds-theme_warning">Pending</span></td><td>£4,500</td></tr>
+            <tr><th scope="row"><div class="slds-truncate"><a href="javascript:void(0);">Initech</a></div></th><td><span class="slds-badge">Draft</span></td><td>£900</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ===== PAGE HEADERS ===== -->
+      <section id="page-headers" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Page Headers</h2>
+        <div class="slds-page-header">
+          <div class="slds-page-header__row">
+            <div class="slds-page-header__col-title">
+              <div class="slds-media">
+                <div class="slds-media__figure">
+                  <span class="slds-icon_container slds-icon-standard-opportunity" title="Opportunities">
+                    <svg class="slds-icon slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#opportunity"></use></svg>
+                  </span>
+                </div>
+                <div class="slds-media__body">
+                  <div class="slds-page-header__name">
+                    <div class="slds-page-header__name-title">
+                      <h1><span>Opportunities</span><span class="slds-page-header__title slds-truncate" title="Recently Viewed">Recently Viewed</span></h1>
+                    </div>
+                  </div>
+                  <p class="slds-page-header__name-meta">5 items · sorted by Name</p>
+                </div>
+              </div>
+            </div>
+            <div class="slds-page-header__col-actions">
+              <div class="slds-page-header__controls"><div class="slds-page-header__control"><button class="slds-button slds-button_neutral">New</button></div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== DESCRIPTION LISTS ===== -->
+      <section id="lists" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Description Lists</h2>
+        <dl class="slds-list_horizontal slds-wrap">
+          <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width:8rem;" title="Account Name">Account Name</dt>
+          <dd class="slds-item_detail slds-truncate" title="Acme">Acme</dd>
+          <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width:8rem;" title="Industry">Industry</dt>
+          <dd class="slds-item_detail slds-truncate" title="Agriculture">Agriculture</dd>
+          <dt class="slds-item_label slds-text-color_weak slds-truncate" style="width:8rem;" title="Phone">Phone</dt>
+          <dd class="slds-item_detail slds-truncate" title="(336) 222-7000">(336) 222-7000</dd>
+        </dl>
+      </section>
+
+      <!-- ===== INPUTS ===== -->
+      <section id="inputs" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Inputs</h2>
+        <div class="slds-grid slds-gutters slds-wrap">
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-form-element__label" for="in-text"><abbr class="slds-required" title="required">* </abbr>Text input</label>
+              <div class="slds-form-element__control"><input type="text" id="in-text" class="slds-input" placeholder="Type here..." /></div>
+            </div>
+            <div class="slds-form-element slds-has-error slds-m-bottom_small">
+              <label class="slds-form-element__label" for="in-err">Input with error</label>
+              <div class="slds-form-element__control"><input type="text" id="in-err" class="slds-input" aria-describedby="err-1" value="Invalid value" /></div>
+              <div class="slds-form-element__help" id="err-1">This field is required.</div>
+            </div>
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-form-element__label" for="in-search">Search</label>
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+                <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left">
+                  <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg>
+                </span>
+                <input type="search" id="in-search" class="slds-input" placeholder="Search..." />
+              </div>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-form-element__label" for="in-area">Textarea</label>
+              <div class="slds-form-element__control"><textarea id="in-area" class="slds-textarea" placeholder="Notes..."></textarea></div>
+            </div>
+            <div class="slds-form-element slds-form-element_readonly slds-m-bottom_small">
+              <span class="slds-form-element__label">Read-only field</span>
+              <div class="slds-form-element__control"><div class="slds-form-element__static">Read-only value</div></div>
+            </div>
+            <div class="slds-form-element slds-m-bottom_small">
+              <label class="slds-form-element__label" for="in-date">Date</label>
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                <input type="text" id="in-date" class="slds-input" placeholder="15/06/2026" />
+                <span class="slds-icon_container slds-icon-utility-event slds-input__icon slds-input__icon_right">
+                  <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use></svg>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== CHECKBOX / RADIO / TOGGLE ===== -->
+      <section id="checkboxes" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Checkbox / Radio / Toggle</h2>
+        <div class="slds-grid slds-gutters slds-wrap">
+          <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element">
+              <legend class="slds-form-element__legend slds-form-element__label">Checkbox group</legend>
+              <div class="slds-form-element__control">
+                <div class="slds-checkbox"><input type="checkbox" id="cb-1" checked /><label class="slds-checkbox__label" for="cb-1"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label">Option one</span></label></div>
+                <div class="slds-checkbox"><input type="checkbox" id="cb-2" /><label class="slds-checkbox__label" for="cb-2"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label">Option two</span></label></div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <fieldset class="slds-form-element">
+              <legend class="slds-form-element__legend slds-form-element__label">Radio group</legend>
+              <div class="slds-form-element__control">
+                <div class="slds-radio"><input type="radio" id="rb-1" name="rg" checked /><label class="slds-radio__label" for="rb-1"><span class="slds-radio_faux"></span><span class="slds-form-element__label">Choice A</span></label></div>
+                <div class="slds-radio"><input type="radio" id="rb-2" name="rg" /><label class="slds-radio__label" for="rb-2"><span class="slds-radio_faux"></span><span class="slds-form-element__label">Choice B</span></label></div>
+              </div>
+            </fieldset>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <div class="slds-form-element">
+              <label class="slds-checkbox_toggle slds-grid">
+                <span class="slds-form-element__label slds-m-bottom_none">Toggle</span>
+                <input type="checkbox" name="toggle" value="on" aria-describedby="toggle-desc" checked />
+                <span id="toggle-desc" class="slds-checkbox_faux_container" aria-live="assertive">
+                  <span class="slds-checkbox_faux"></span>
+                  <span class="slds-checkbox_on">Enabled</span>
+                  <span class="slds-checkbox_off">Disabled</span>
+                </span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SELECT & COMBOBOX ===== -->
+      <section id="select" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Select &amp; Combobox</h2>
+        <div class="slds-grid slds-gutters slds-wrap">
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element">
+              <label class="slds-form-element__label" for="sel-1">Select (picklist)</label>
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select" id="sel-1"><option>Charolais</option><option>Hereford</option><option>Limousin cross</option></select>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-2">
+            <div class="slds-form-element">
+              <label class="slds-form-element__label" for="cbx-1">Combobox (read-only style)</label>
+              <div class="slds-form-element__control">
+                <div class="slds-combobox_container">
+                  <div class="slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click">
+                    <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
+                      <input type="text" class="slds-input slds-combobox__input" id="cbx-1" readonly placeholder="Select an option" value="Vaccinated" />
+                      <span class="slds-icon_container slds-icon-utility-down slds-input__icon slds-input__icon_right">
+                        <svg class="slds-icon slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#down"></use></svg>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SLIDER & FILE ===== -->
+      <section id="slider" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Slider &amp; File Selector</h2>
+        <div class="slds-form-element slds-m-bottom_medium">
+          <label class="slds-form-element__label" for="slider-1">Slider</label>
+          <div class="slds-form-element__control">
+            <div class="slds-slider">
+              <input type="range" id="slider-1" class="slds-slider__range" value="50" min="0" max="100" />
+              <span class="slds-slider__value" aria-hidden="true">50</span>
+            </div>
+          </div>
+        </div>
+        <div class="slds-form-element">
+          <span class="slds-form-element__label">Upload file</span>
+          <div class="slds-form-element__control">
+            <div class="slds-file-selector slds-file-selector_files">
+              <div class="slds-file-selector__dropzone">
+                <input type="file" class="slds-file-selector__input slds-assistive-text" id="file-1" />
+                <label class="slds-file-selector__body" for="file-1">
+                  <span class="slds-file-selector__button slds-button slds-button_neutral">
+                    <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#upload"></use></svg>Upload Files
+                  </span>
+                  <span class="slds-file-selector__text slds-medium-show">or Drop Files</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ALERTS ===== -->
+      <section id="alerts" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Alerts</h2>
+        <div class="slds-notify_container slds-is-relative slds-m-bottom_small">
+          <div class="slds-notify slds-notify_alert slds-theme_info" role="alert">
+            <span class="slds-assistive-text">info</span>
+            <span class="slds-icon_container slds-icon-utility-user slds-m-right_x-small"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg></span>
+            <h2>Info alert — a new version is available.</h2>
+          </div>
+        </div>
+        <div class="slds-notify_container slds-is-relative slds-m-bottom_small">
+          <div class="slds-notify slds-notify_alert slds-theme_warning" role="alert">
+            <span class="slds-assistive-text">warning</span>
+            <span class="slds-icon_container slds-icon-utility-warning slds-m-right_x-small"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#warning"></use></svg></span>
+            <h2>Warning alert — your trial expires soon.</h2>
+          </div>
+        </div>
+        <div class="slds-notify_container slds-is-relative">
+          <div class="slds-notify slds-notify_alert slds-theme_error" role="alert">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_x-small"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use></svg></span>
+            <h2>Error alert — we hit a snag saving your changes.</h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TOASTS ===== -->
+      <section id="toasts" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Toasts</h2>
+        <div class="slds-notify_container slds-is-relative slds-m-bottom_small">
+          <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+            <span class="slds-assistive-text">success</span>
+            <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg></span>
+            <div class="slds-notify__content"><h2 class="slds-text-heading_small">Record saved successfully.</h2></div>
+            <div class="slds-notify__close">
+              <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button>
+            </div>
+          </div>
+        </div>
+        <div class="slds-notify_container slds-is-relative">
+          <div class="slds-notify slds-notify_toast slds-theme_error" role="status">
+            <span class="slds-assistive-text">error</span>
+            <span class="slds-icon_container slds-icon-utility-error slds-m-right_small slds-no-flex slds-align-top"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#error"></use></svg></span>
+            <div class="slds-notify__content"><h2 class="slds-text-heading_small">Something went wrong.</h2></div>
+            <div class="slds-notify__close">
+              <button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== SCOPED NOTIFICATIONS ===== -->
+      <section id="notifications" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Scoped Notifications</h2>
+        <div class="slds-scoped-notification slds-media slds-media_center slds-theme_info slds-m-bottom_small" role="status">
+          <div class="slds-media__figure"><span class="slds-icon_container slds-icon-utility-info"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg></span></div>
+          <div class="slds-media__body"><p>This is an informational scoped notification.</p></div>
+        </div>
+        <div class="slds-scoped-notification slds-media slds-media_center slds-scoped-notification_light" role="status">
+          <div class="slds-media__figure"><span class="slds-icon_container slds-icon-utility-info"><svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg></span></div>
+          <div class="slds-media__body"><p>A lighter scoped notification variant.</p></div>
+        </div>
+      </section>
+
+      <!-- ===== MODAL ===== -->
+      <section id="modals" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Modal</h2>
+        <button class="slds-button slds-button_brand" onclick="sgOpenModal()">Open modal</button>
+        <div id="sg-modal-wrapper" class="slds-hide">
+          <section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+              <div class="slds-modal__header">
+                <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick="sgCloseModal()">
+                  <svg class="slds-button__icon slds-button__icon_large" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg>
+                  <span class="slds-assistive-text">Close</span>
+                </button>
+                <h1 id="modal-heading" class="slds-modal__title slds-hyphenate">Modal header</h1>
+              </div>
+              <div class="slds-modal__content slds-p-around_medium"><p>Modal body content. Standard SLDS modal markup.</p></div>
+              <div class="slds-modal__footer">
+                <button class="slds-button slds-button_neutral" onclick="sgCloseModal()">Cancel</button>
+                <button class="slds-button slds-button_brand" onclick="sgCloseModal()">Save</button>
+              </div>
+            </div>
+          </section>
+          <div class="slds-backdrop slds-backdrop_open" onclick="sgCloseModal()"></div>
+        </div>
+      </section>
+
+      <!-- ===== POPOVER & TOOLTIP ===== -->
+      <section id="popovers" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Popover &amp; Tooltip</h2>
+        <div class="slds-grid slds-gutters slds-wrap">
+          <div class="slds-col slds-size_1-of-2">
+            <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">Popover (walkthrough)</p>
+            <section class="slds-popover slds-nubbin_left" role="dialog" style="position:relative; left:1rem;">
+              <div class="slds-popover__body">
+                <p><strong>Popover title.</strong> Popovers display contextual information and standard SLDS nubbin styling.</p>
+              </div>
+            </section>
+          </div>
+          <div class="slds-col slds-size_1-of-2">
+            <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small">Tooltip</p>
+            <div class="slds-is-relative" style="display:inline-block;">
+              <button class="slds-button slds-button_icon slds-button_icon-border-filled" aria-describedby="sg-tip" title="Help"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg><span class="slds-assistive-text">Help</span></button>
+              <div class="slds-popover slds-popover_tooltip slds-nubbin_left" role="tooltip" id="sg-tip" style="position:absolute; top:-0.25rem; left:2.5rem; width:14rem;">
+                <div class="slds-popover__body">This is a tooltip.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== ILLUSTRATION / EMPTY STATE ===== -->
+      <section id="illustration" class="sg-section slds-m-bottom_x-large">
+        <h2 class="slds-text-heading_medium slds-p-bottom_x-small slds-border_bottom slds-m-bottom_small">Empty State (Illustration)</h2>
+        <div class="slds-illustration slds-illustration_small slds-text-align_center slds-p-around_large slds-box">
+          <span class="slds-icon_container slds-icon-utility-search">
+            <svg class="slds-icon slds-icon_large slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg>
+          </span>
+          <div class="slds-text-longform slds-m-top_small">
+            <h3 class="slds-text-heading_medium">No results found</h3>
+            <p class="slds-text-body_regular slds-text-color_weak">Try adjusting your search or filters to find what you're looking for.</p>
+          </div>
+        </div>
+      </section>
+
+    </div><!-- /content col -->
+  </div>
+</div>
+
+<script>
+  // Tabs (default + scoped): activate the clicked tab within its tabset.
+  function sgTab(link) {
+    var set = link.closest('[data-tabset]');
+    var itemClass = link.parentNode.className.split(' ')[0]; // slds-tabs_default__item or _scoped__item
+    set.querySelectorAll('[role=tab]').forEach(function (a) {
+      a.parentNode.classList.remove('slds-is-active');
+    });
+    link.parentNode.classList.add('slds-is-active');
+    set.querySelectorAll('[role=tabpanel]').forEach(function (p) {
+      p.classList.add('slds-hide'); p.classList.remove('slds-show');
+    });
+    var panel = document.getElementById(link.getAttribute('data-tab'));
+    panel.classList.remove('slds-hide'); panel.classList.add('slds-show');
+  }
+
+  // Accordion: toggle the section open/closed.
+  function sgAccordion(btn) {
+    var section = btn.closest('.slds-accordion__section');
+    var open = section.classList.toggle('slds-is-open');
+    btn.setAttribute('aria-expanded', open);
+  }
+
+  // Modal open/close.
+  function sgOpenModal() { document.getElementById('sg-modal-wrapper').classList.remove('slds-hide'); }
+  function sgCloseModal() { document.getElementById('sg-modal-wrapper').classList.add('slds-hide'); }
+</script>
+
+{% endblock %}

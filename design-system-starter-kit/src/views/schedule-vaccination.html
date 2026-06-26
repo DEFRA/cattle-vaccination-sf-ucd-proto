@@ -1,0 +1,442 @@
+{#
+  Schedule Vaccination — Screen Flow
+  Mimics a standard Salesforce Lightning Screen Flow using SLDS components:
+  - Progress indicator across screens
+  - One screen at a time (Select Animal -> Details -> Review)
+  - Standard flow footer (Previous / Next / Finish)
+  - Confirmation screen on Finish
+  Reference data (cattle, vaccines, vets) is injected via Nunjucks.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<style>
+  /* Embedded mode (?embed=1): hide the app chrome so the flow can sit inside an
+     inline panel on a record page — the prototype equivalent of a Flow component. */
+  .is-embed .slds-global-header_container,
+  .is-embed .app-header-placeholder,
+  .is-embed .app-nav { display: none !important; }
+  .is-embed .app-wrapper { position: static; top: 0; bottom: auto; overflow: visible; }
+  .is-embed .slds-p-around_medium { padding: 0.5rem; }
+</style>
+
+<div class="slds-p-around_medium">
+  <div class="slds-grid slds-grid_align-center">
+    <div class="slds-col" style="max-width:42rem; width:100%;">
+
+      <!-- Flow container (Salesforce renders a flow inside a card/modal) -->
+      <article class="slds-card slds-card_boundary">
+
+        <!-- Flow header -->
+        <div class="slds-card__header slds-grid slds-p-around_medium slds-theme_shade">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure">
+              <span class="slds-icon_container slds-icon-custom-custom51" title="Vaccinations">
+                <svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom51"></use></svg>
+              </span>
+            </div>
+            <div class="slds-media__body">
+              <h1 class="slds-text-heading_small">Log a Vaccination</h1>
+              <p class="slds-text-body_small slds-text-color_weak" id="flow-step-label">Step 1 of 3 · Select animal</p>
+            </div>
+          </header>
+        </div>
+
+        <!-- Progress indicator -->
+        <div class="slds-p-horizontal_large slds-p-top_medium" id="flow-progress-wrap">
+          <div class="slds-progress">
+            <ol class="slds-progress__list">
+              <li class="slds-progress__item slds-is-active" data-progress="1">
+                <button class="slds-button slds-button_icon slds-progress__marker" title="Select animal"><span class="slds-assistive-text">Select animal</span></button>
+              </li>
+              <li class="slds-progress__item" data-progress="2">
+                <button class="slds-button slds-button_icon slds-progress__marker" title="Details"><span class="slds-assistive-text">Details</span></button>
+              </li>
+              <li class="slds-progress__item" data-progress="3">
+                <button class="slds-button slds-button_icon slds-progress__marker" title="Review"><span class="slds-assistive-text">Review</span></button>
+              </li>
+            </ol>
+            <div class="slds-progress-bar slds-progress-bar_x-small" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" role="progressbar">
+              <span class="slds-progress-bar__value" id="flow-progress-bar" style="width:0%;"><span class="slds-assistive-text">Progress</span></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Flow body: screens -->
+        <div class="slds-card__body slds-p-around_large">
+
+          <!-- ===== Screen 1: Select animal ===== -->
+          <div class="flow-screen" data-screen="1">
+            <fieldset class="slds-form-element">
+              <legend class="slds-form-element__legend slds-form-element__label">Which animal are you scheduling?</legend>
+              <div class="slds-form-element__control" id="animal-radios">
+                {% for c in shared.cattle %}
+                <span class="slds-radio">
+                  <input type="radio" id="animal-{{ loop.index0 }}" name="animal" value="{{ loop.index0 }}" />
+                  <label class="slds-radio__label" for="animal-{{ loop.index0 }}">
+                    <span class="slds-radio_faux"></span>
+                    <span class="slds-form-element__label">{{ c.tag }} &middot; {{ c.breed }} &middot; {{ c.sex }}</span>
+                  </label>
+                </span>
+                {% endfor %}
+              </div>
+              <div class="slds-form-element__help slds-hide" id="animal-error">Select an animal to continue.</div>
+            </fieldset>
+          </div>
+
+          <!-- ===== Screen 2: Vaccination details ===== -->
+          <div class="flow-screen slds-hide" data-screen="2">
+            <!-- Shown when the animal(s) are already known (record launch or mass selection) -->
+            <div id="animal-context" class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_medium slds-hide">
+              <span class="slds-text-title slds-text-color_weak" id="animal-context-label">Animal</span>
+              <div id="animal-context-value" class="slds-text-body_regular"></div>
+            </div>
+            <!-- Who vaccinated -->
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-form-element__label" for="f-who"><abbr class="slds-required" title="required">* </abbr>Who vaccinated the cattle?</label>
+              <div class="slds-form-element__control">
+                <div class="slds-select_container">
+                  <select class="slds-select" id="f-who">
+                    <option value="">--None--</option>
+                    {% for v in vaccinators %}<option value="{{ v.value if v.value else v }}">{{ v.label if v.label else v }}</option>{% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="slds-form-element__help slds-hide" id="who-error">Select who vaccinated the cattle.</div>
+            </div>
+
+            <!-- Date of vaccination -->
+            <div class="slds-form-element slds-m-bottom_large">
+              <label class="slds-form-element__label" for="f-date"><abbr class="slds-required" title="required">* </abbr>Date of vaccination</label>
+              <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right" style="max-width:14rem;">
+                <input type="date" id="f-date" class="slds-input" />
+                <span class="slds-icon_container slds-icon-utility-event slds-input__icon slds-input__icon_right">
+                  <svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use></svg>
+                </span>
+              </div>
+              <div class="slds-form-element__help slds-hide" id="date-error">Enter the date of vaccination.</div>
+            </div>
+
+            <!-- Vaccine batch details -->
+            <h3 class="slds-text-title_caps slds-text-color_weak slds-m-bottom_small slds-border_bottom slds-p-bottom_xx-small">Vaccine batch details</h3>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-form-element__label" for="f-vbatch"><abbr class="slds-required" title="required">* </abbr>Vaccine batch number</label>
+              <div class="slds-form-element__control"><input type="text" id="f-vbatch" class="slds-input" style="max-width:18rem;" placeholder="For example, 125007G" /></div>
+              <div class="slds-form-element__help slds-hide" id="vbatch-error">Enter the vaccine batch number.</div>
+            </div>
+            <fieldset class="slds-form-element slds-m-bottom_large">
+              <legend class="slds-form-element__legend slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Vaccine expiry date</legend>
+              <div class="slds-form-element__control">
+                <div class="slds-grid slds-gutters_x-small" style="max-width:18rem;">
+                  <div class="slds-col">
+                    <label class="slds-form-element__label slds-assistive-text" for="f-vexp-m">Month</label>
+                    <div class="slds-select_container"><select class="slds-select sg-month" id="f-vexp-m"><option value="">Month</option></select></div>
+                  </div>
+                  <div class="slds-col">
+                    <label class="slds-form-element__label slds-assistive-text" for="f-vexp-y">Year</label>
+                    <div class="slds-select_container"><select class="slds-select sg-year" id="f-vexp-y"><option value="">Year</option></select></div>
+                  </div>
+                </div>
+              </div>
+              <div class="slds-form-element__help">For example, 05 2029</div>
+              <div class="slds-form-element__help slds-hide" id="vexp-error">Enter the vaccine expiry month and year.</div>
+            </fieldset>
+
+            <!-- Diluent batch details -->
+            <h3 class="slds-text-title_caps slds-text-color_weak slds-m-bottom_small slds-border_bottom slds-p-bottom_xx-small">Diluent batch details</h3>
+            <div class="slds-form-element slds-m-bottom_medium">
+              <label class="slds-form-element__label" for="f-dbatch"><abbr class="slds-required" title="required">* </abbr>Diluent batch number</label>
+              <div class="slds-form-element__control"><input type="text" id="f-dbatch" class="slds-input" style="max-width:18rem;" placeholder="For example, 37925B" /></div>
+              <div class="slds-form-element__help slds-hide" id="dbatch-error">Enter the diluent batch number.</div>
+            </div>
+            <fieldset class="slds-form-element">
+              <legend class="slds-form-element__legend slds-form-element__label"><abbr class="slds-required" title="required">* </abbr>Diluent expiry date</legend>
+              <div class="slds-form-element__control">
+                <div class="slds-grid slds-gutters_x-small" style="max-width:18rem;">
+                  <div class="slds-col">
+                    <label class="slds-form-element__label slds-assistive-text" for="f-dexp-m">Month</label>
+                    <div class="slds-select_container"><select class="slds-select sg-month" id="f-dexp-m"><option value="">Month</option></select></div>
+                  </div>
+                  <div class="slds-col">
+                    <label class="slds-form-element__label slds-assistive-text" for="f-dexp-y">Year</label>
+                    <div class="slds-select_container"><select class="slds-select sg-year" id="f-dexp-y"><option value="">Year</option></select></div>
+                  </div>
+                </div>
+              </div>
+              <div class="slds-form-element__help">For example, 05 2029</div>
+              <div class="slds-form-element__help slds-hide" id="dexp-error">Enter the diluent expiry month and year.</div>
+            </fieldset>
+          </div>
+
+          <!-- ===== Screen 3: Review ===== -->
+          <div class="flow-screen slds-hide" data-screen="3">
+            <div class="slds-scoped-notification slds-media slds-media_center slds-theme_info slds-m-bottom_medium" role="status">
+              <div class="slds-media__figure"><span class="slds-icon_container slds-icon-utility-info"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg></span></div>
+              <div class="slds-media__body"><p>Review the details below, then select Finish to log the vaccination.</p></div>
+            </div>
+            <div class="slds-grid slds-wrap slds-gutters">
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Animal</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-animal"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Vaccinated by</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-who"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-1"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Date of vaccination</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-date"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Vaccine batch number</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-vbatch"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Vaccine expiry date</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-vexp"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Diluent batch number</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-dbatch"></div></div></div></div>
+              <div class="slds-col slds-size_1-of-2"><div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Diluent expiry date</span><div class="slds-form-element__control"><div class="slds-form-element__static" id="r-dexp"></div></div></div></div>
+            </div>
+
+            <!-- Declaration — SLDS radio group; 'No' routes back to edit (a Flow Decision) -->
+            <h3 class="slds-text-heading_small slds-m-top_large slds-m-bottom_x-small">Declaration</h3>
+            <fieldset class="slds-form-element">
+              <legend class="slds-form-element__legend slds-form-element__label">I have accurately reported all the vaccinations.</legend>
+              <div class="slds-form-element__control">
+                <span class="slds-radio">
+                  <input type="radio" id="declare-yes" name="declare" value="yes" />
+                  <label class="slds-radio__label" for="declare-yes"><span class="slds-radio_faux"></span><span class="slds-form-element__label">Yes, I have checked the answers</span></label>
+                </span>
+                <span class="slds-radio">
+                  <input type="radio" id="declare-no" name="declare" value="no" />
+                  <label class="slds-radio__label" for="declare-no"><span class="slds-radio_faux"></span><span class="slds-form-element__label">No, I need to make changes</span></label>
+                </span>
+              </div>
+              <div class="slds-form-element__help slds-hide" id="declare-error">Select whether you have checked the answers.</div>
+            </fieldset>
+          </div>
+
+        </div>
+
+        <!-- Standard flow footer -->
+        <footer class="slds-card__footer slds-grid slds-grid_align-spread slds-grid_vertical-align-center" id="flow-footer">
+          <a class="slds-button slds-button_neutral" href="/home.html" id="flow-cancel">Cancel</a>
+          <div>
+            <button class="slds-button slds-button_neutral slds-hide" id="flow-prev" onclick="flowPrev()">Previous</button>
+            <button class="slds-button slds-button_brand" id="flow-next" onclick="flowNext()">Next</button>
+          </div>
+        </footer>
+      </article>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+
+  // Embedded mode: running inside an inline panel (iframe) on a record page.
+  var EMBED = /[?&]embed=1/.test(window.location.search);
+  if (EMBED) document.documentElement.classList.add('is-embed');
+  function postHeight() {
+    if (EMBED) window.parent.postMessage({ type: 'vaxHeight', h: document.body.scrollHeight + 8 }, '*');
+  }
+
+  // Mass mode: launched from the list with a selection — apply the same batch
+  // details to every selected animal (a list-view Screen Flow on a collection).
+  var MASS = /[?&]mass=1/.test(window.location.search);
+  var selectedTags = [];
+  if (MASS) { try { selectedTags = JSON.parse(sessionStorage.getItem('bovinetb_selection') || '[]'); } catch (e) {} }
+
+  // Launched from a record/row? Then the single animal is already known — skip the
+  // "Select animal" screen, like a flow that receives a recordId from its action.
+  var ctxMatch = window.location.search.match(/[?&]i=(\d+)/);
+  var ctxIndex = ctxMatch ? parseInt(ctxMatch[1], 10) : -1;
+  var hasCtx = !MASS && ctxMatch && !isNaN(ctxIndex) && ctxIndex >= 0 && ctxIndex < cattle.length;
+
+  // Active steps: animal(s) known -> Details (2) -> Review (3); otherwise also Select animal (1).
+  var activeSteps = (hasCtx || MASS) ? [2, 3] : [1, 2, 3];
+  var step = activeSteps[0];
+
+  (function init() {
+    // Populate Month (01-12) and Year selects for the expiry pickers.
+    var months = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+    document.querySelectorAll('select.sg-month').forEach(function (sel) {
+      months.forEach(function (m) { sel.add(new Option(m, m)); });
+    });
+    var thisYear = new Date().getFullYear();
+    document.querySelectorAll('select.sg-year').forEach(function (sel) {
+      for (var y = thisYear; y <= thisYear + 8; y++) sel.add(new Option(String(y), String(y)));
+    });
+
+    if (hasCtx || MASS) {
+      var marker1 = document.querySelector('[data-progress="1"]');
+      if (marker1) marker1.classList.add('slds-hide');
+      document.getElementById('animal-context').classList.remove('slds-hide');
+    }
+    if (hasCtx) {
+      var c = cattle[ctxIndex];
+      document.getElementById('animal-context-value').textContent = c.tag + ' · ' + c.breed + ' · ' + c.sex;
+    }
+    if (MASS) {
+      document.getElementById('animal-context-label').textContent = 'Applying to';
+      var shown = selectedTags.slice(0, 5).join(', ');
+      document.getElementById('animal-context-value').textContent =
+        selectedTags.length + ' selected animal' + (selectedTags.length === 1 ? '' : 's') +
+        (selectedTags.length ? ' · ' + shown + (selectedTags.length > 5 ? ', …' : '') : '');
+    }
+
+    // In embedded mode, Cancel collapses the inline panel instead of navigating.
+    if (EMBED) {
+      var cancel = document.getElementById('flow-cancel');
+      if (cancel) cancel.addEventListener('click', function (e) { e.preventDefault(); window.parent.postMessage({ type: 'vaxCancel' }, '*'); });
+    }
+    setTimeout(postHeight, 50);
+  })();
+
+  function selectedAnimal() {
+    if (hasCtx) return cattle[ctxIndex];
+    var r = document.querySelector('input[name=animal]:checked');
+    return r ? cattle[parseInt(r.value, 10)] : null;
+  }
+
+  function fmtDate(iso) {
+    if (!iso) return '';
+    var d = new Date(iso + 'T00:00:00');
+    return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+  }
+
+  // Toggle an error message + the field's error styling.
+  function showErr(errId, on) {
+    document.getElementById(errId).classList.toggle('slds-hide', !on);
+    var fe = document.getElementById(errId).closest('.slds-form-element');
+    if (fe) fe.classList.toggle('slds-has-error', on);
+  }
+  function req(id, errId) {
+    var bad = !document.getElementById(id).value;
+    showErr(errId, bad);
+    return !bad;
+  }
+  function reqPair(idA, idB, errId) {
+    var bad = !document.getElementById(idA).value || !document.getElementById(idB).value;
+    showErr(errId, bad);
+    return !bad;
+  }
+
+  function validate(s) {
+    if (s === 1) {
+      var ok = !!selectedAnimal();
+      document.getElementById('animal-error').classList.toggle('slds-hide', ok);
+      return ok;
+    }
+    if (s === 2) {
+      var ok2 = true;
+      if (!req('f-who', 'who-error')) ok2 = false;
+      if (!req('f-date', 'date-error')) ok2 = false;
+      if (!req('f-vbatch', 'vbatch-error')) ok2 = false;
+      if (!reqPair('f-vexp-m', 'f-vexp-y', 'vexp-error')) ok2 = false;
+      if (!req('f-dbatch', 'dbatch-error')) ok2 = false;
+      if (!reqPair('f-dexp-m', 'f-dexp-y', 'dexp-error')) ok2 = false;
+      return ok2;
+    }
+    if (s === 3) {
+      var chosen = document.getElementById('declare-yes').checked || document.getElementById('declare-no').checked;
+      document.getElementById('declare-error').classList.toggle('slds-hide', chosen);
+      var fe = document.getElementById('declare-yes').closest('.slds-form-element');
+      if (fe) fe.classList.toggle('slds-has-error', !chosen);
+      return chosen;
+    }
+    return true;
+  }
+
+  function paint() {
+    document.querySelectorAll('.flow-screen').forEach(function (el) {
+      el.classList.toggle('slds-hide', el.getAttribute('data-screen') !== String(step));
+    });
+    document.querySelectorAll('[data-progress]').forEach(function (li) {
+      var n = parseInt(li.getAttribute('data-progress'), 10);
+      li.classList.toggle('slds-is-completed', activeSteps.indexOf(n) > -1 && n < step);
+      li.classList.toggle('slds-is-active', n === step);
+    });
+    var idx = activeSteps.indexOf(step);
+    var total = activeSteps.length;
+    document.getElementById('flow-progress-bar').style.width = (total > 1 ? (idx / (total - 1)) * 100 : 0) + '%';
+    var labels = { 1: 'Select animal', 2: 'Vaccination details', 3: 'Review' };
+    document.getElementById('flow-step-label').textContent = 'Step ' + (idx + 1) + ' of ' + total + ' · ' + labels[step];
+    document.getElementById('flow-prev').classList.toggle('slds-hide', idx === 0);
+    document.getElementById('flow-next').textContent = (idx === total - 1) ? 'Finish' : 'Next';
+    postHeight();
+  }
+
+  function flowNext() {
+    if (!validate(step)) return;
+    var idx = activeSteps.indexOf(step);
+    if (idx < activeSteps.length - 1) {
+      step = activeSteps[idx + 1];
+      paint();
+      if (step === 3) buildReview();
+      return;
+    }
+    // Review screen: 'No, I need to make changes' routes back to the details screen (Flow Decision).
+    if (document.getElementById('declare-no').checked) { step = 2; paint(); return; }
+    finish();
+  }
+
+  function flowPrev() {
+    var idx = activeSteps.indexOf(step);
+    if (idx > 0) { step = activeSteps[idx - 1]; paint(); }
+  }
+
+  function expiryStr(mId, yId) {
+    var m = document.getElementById(mId).value, y = document.getElementById(yId).value;
+    return (m && y) ? (m + ' ' + y) : '';
+  }
+
+  function buildReview() {
+    if (MASS) {
+      document.getElementById('r-animal').textContent =
+        selectedTags.length + ' selected (' + selectedTags.slice(0, 3).join(', ') + (selectedTags.length > 3 ? ', …' : '') + ')';
+    } else {
+      var c = selectedAnimal();
+      document.getElementById('r-animal').textContent = c ? (c.tag + ' · ' + c.breed) : '';
+    }
+    document.getElementById('r-who').textContent = document.getElementById('f-who').value;
+    document.getElementById('r-date').textContent = fmtDate(document.getElementById('f-date').value);
+    document.getElementById('r-vbatch').textContent = document.getElementById('f-vbatch').value;
+    document.getElementById('r-vexp').textContent = expiryStr('f-vexp-m', 'f-vexp-y');
+    document.getElementById('r-dbatch').textContent = document.getElementById('f-dbatch').value;
+    document.getElementById('r-dexp').textContent = expiryStr('f-dexp-m', 'f-dexp-y');
+    // Re-affirm the declaration each time the review is shown.
+    document.getElementById('declare-yes').checked = false;
+    document.getElementById('declare-no').checked = false;
+    document.getElementById('declare-error').classList.add('slds-hide');
+  }
+
+  function finish() {
+    // The batch details entered once, applied to every target animal.
+    var rec = {
+      date: fmtDate(document.getElementById('f-date').value),
+      by: document.getElementById('f-who').value,
+      vaccineBatch: document.getElementById('f-vbatch').value,
+      vaccineExpiry: expiryStr('f-vexp-m', 'f-vexp-y'),
+      diluentBatch: document.getElementById('f-dbatch').value,
+      diluentExpiry: expiryStr('f-dexp-m', 'f-dexp-y')
+    };
+
+    // Mass: apply to every selected animal, then return to the list.
+    if (MASS) {
+      selectedTags.forEach(function (tag) { VaxStore.add(tag, rec); });
+      var n = selectedTags.length;
+      try { sessionStorage.removeItem('bovinetb_selection'); } catch (e) {}
+      // Embedded inline (e.g. on a holding) → tell the host page; standalone → navigate back.
+      if (EMBED) { window.parent.postMessage({ type: 'vaxLogged', count: n }, '*'); return; }
+      var ret = '/cases.html';
+      try { ret = sessionStorage.getItem('bovinetb_return') || '/cases.html'; } catch (e) {}
+      try { sessionStorage.removeItem('bovinetb_return'); } catch (e) {}
+      window.location.href = ret + (ret.indexOf('?') > -1 ? '&' : '?') + 'logged=' + n;
+      return;
+    }
+
+    // Single animal: save through the shared store (stand-in for a flow "Create Records").
+    var c = selectedAnimal();
+    var idx = cattle.indexOf(c);
+    VaxStore.add(c.tag, rec);
+    // Finish behaviour: embedded → tell the host page; standalone → navigate to the record.
+    if (EMBED) {
+      window.parent.postMessage({ type: 'vaxLogged', i: idx }, '*');
+    } else {
+      window.location.href = '/cow.html?i=' + idx + '&logged=1';
+    }
+  }
+
+  paint();
+</script>
+
+{% endblock %}

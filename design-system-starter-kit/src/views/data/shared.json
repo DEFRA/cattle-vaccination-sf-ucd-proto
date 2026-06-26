@@ -1,0 +1,204 @@
+// DO NOT DELETE THIS FILE!
+// This data is shared across all templates and is accessed via {{ shared.someKey }}
+//
+// Breed codes follow the BCMS / UK farming standard. An "X" suffix means a cross.
+// CH = Charolais, HER = Hereford, BALX = Blonde d'Aquitaine cross,
+// LIMX = Limousin cross, AAX = Aberdeen Angus cross.
+{
+  "somedata": "somevalue",
+  "builtWith": "Salesforce Lightning Design System Starter Kit",
+  "appName": "APHA Services",
+
+  // Shared cattle records — used by both cattle.html (list) and cow.html (record).
+  "cattle": [
+    {
+      "tag": "UK58291000125",
+      "breed": "HER",
+      "sex": "Female",
+      "dob": "14 Mar 2021",
+      "status": "Vaccinated",
+      "last": "02 Apr 2026",
+      "due": "18 Jun 2026",
+      "assignedTo": "A. Patel MRCVS",
+      "cph": "12/345/6789",
+      "vax": [
+        { "date": "02 Apr 2026", "by": "A. Patel MRCVS", "vaccineBatch": "125007G", "vaccineExpiry": "05 2029", "diluentBatch": "37925B", "diluentExpiry": "05 2029" },
+        { "date": "10 Oct 2025", "by": "A. Patel MRCVS", "vaccineBatch": "118842F", "vaccineExpiry": "11 2028", "diluentBatch": "33010A", "diluentExpiry": "11 2028" },
+        { "date": "05 Apr 2025", "by": "J. Hughes MRCVS", "vaccineBatch": "110233E", "vaccineExpiry": "03 2028", "diluentBatch": "29155C", "diluentExpiry": "03 2028" }
+      ]
+    },
+    {
+      "tag": "UK58291000126",
+      "breed": "BALX",
+      "sex": "Female",
+      "dob": "02 Jun 2022",
+      "status": "Due Soon",
+      "last": "18 Jun 2025",
+      "due": "12 Jun 2026",
+      "assignedTo": "J. Hughes MRCVS",
+      "cph": "12/345/6789",
+      "vax": [
+        { "date": "18 Jun 2025", "by": "J. Hughes MRCVS", "vaccineBatch": "120554H", "vaccineExpiry": "06 2029", "diluentBatch": "34882D", "diluentExpiry": "06 2029" },
+        { "date": "18 Jun 2024", "by": "J. Hughes MRCVS", "vaccineBatch": "109120B", "vaccineExpiry": "06 2027", "diluentBatch": "27331A", "diluentExpiry": "06 2027" }
+      ]
+    },
+    {
+      "tag": "UK58291000127",
+      "breed": "AAX",
+      "sex": "Female",
+      "dob": "21 Jan 2023",
+      "status": "Due Soon",
+      "last": "12 Nov 2025",
+      "due": "20 Jun 2026",
+      "assignedTo": "Unassigned",
+      "cph": "33/210/0011",
+      "vax": [
+        { "date": "12 Nov 2025", "by": "S. Okafor MRCVS", "vaccineBatch": "114327K", "vaccineExpiry": "08 2028", "diluentBatch": "31904L", "diluentExpiry": "08 2028" }
+      ]
+    },
+    {
+      "tag": "UK58291000128",
+      "breed": "CH",
+      "sex": "Male",
+      "dob": "09 Sep 2020",
+      "status": "Vaccinated",
+      "last": "15 May 2026",
+      "due": "15 May 2026",
+      "assignedTo": "A. Patel MRCVS",
+      "cph": "33/210/0011",
+      "vax": [
+        { "date": "15 May 2026", "by": "A. Patel MRCVS", "vaccineBatch": "126771J", "vaccineExpiry": "04 2029", "diluentBatch": "38004E", "diluentExpiry": "04 2029" },
+        { "date": "12 Nov 2025", "by": "A. Patel MRCVS", "vaccineBatch": "119980G", "vaccineExpiry": "10 2028", "diluentBatch": "33550B", "diluentExpiry": "10 2028" }
+      ]
+    },
+    {
+      "tag": "UK58291000129",
+      "breed": "LIMX",
+      "sex": "Female",
+      "dob": "30 Jul 2021",
+      "status": "Overdue",
+      "last": "01 Feb 2025",
+      "due": "01 Feb 2026",
+      "assignedTo": "J. Hughes MRCVS",
+      "cph": "50/118/2204",
+      "vax": [
+        { "date": "01 Feb 2025", "by": "J. Hughes MRCVS", "vaccineBatch": "112048D", "vaccineExpiry": "01 2028", "diluentBatch": "30221F", "diluentExpiry": "01 2028" }
+      ]
+    },
+    { "tag": "UK987654500120", "breed": "HF", "sex": "Female", "dob": "14 Mar 2026", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500098", "breed": "DS", "sex": "Female", "dob": "14 Mar 2026", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500085", "breed": "HER", "sex": "Female", "dob": "14 Mar 2026", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK246810033869", "breed": "BF", "sex": "Male", "dob": "14 Feb 2026", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500116", "breed": "LIM", "sex": "Female", "dob": "14 Jan 2026", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500100", "breed": "SIM", "sex": "Female", "dob": "14 Nov 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK001020053668", "breed": "LIM", "sex": "Female", "dob": "17 Nov 2021", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500092", "breed": "LIM", "sex": "Female", "dob": "25 Jun 2025", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500094", "breed": "AAX", "sex": "Female", "dob": "19 Jul 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500093", "breed": "AAX", "sex": "Male", "dob": "04 Aug 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500071", "breed": "CH", "sex": "Female", "dob": "07 Sep 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500122", "breed": "HER", "sex": "Female", "dob": "26 Nov 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK473829200094", "breed": "BB", "sex": "Female", "dob": "24 Nov 2019", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500105", "breed": "DS", "sex": "Female", "dob": "13 Oct 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK741852600105", "breed": "LIM", "sex": "Female", "dob": "18 Oct 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500106", "breed": "SIM", "sex": "Female", "dob": "16 Feb 2021", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500102", "breed": "SIM", "sex": "Female", "dob": "28 Jul 2019", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500112", "breed": "BALX", "sex": "Female", "dob": "14 Dec 2022", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500090", "breed": "DS", "sex": "Female", "dob": "14 May 2018", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500081", "breed": "HER", "sex": "Female", "dob": "19 Sep 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500117", "breed": "CH", "sex": "Female", "dob": "07 May 2025", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500115", "breed": "HF", "sex": "Male", "dob": "18 Sep 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500107", "breed": "BB", "sex": "Female", "dob": "07 May 2021", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK813579976237", "breed": "HF", "sex": "Female", "dob": "16 Oct 2022", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500074", "breed": "HER", "sex": "Female", "dob": "12 Mar 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500096", "breed": "BF", "sex": "Female", "dob": "19 Aug 2025", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK120900100096", "breed": "BB", "sex": "Female", "dob": "14 Apr 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500075", "breed": "BALX", "sex": "Male", "dob": "16 Jul 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500087", "breed": "LIM", "sex": "Female", "dob": "14 Apr 2019", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK120900139868", "breed": "BALX", "sex": "Male", "dob": "13 May 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500077", "breed": "BF", "sex": "Female", "dob": "28 Jun 2025", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK246810044292", "breed": "HF", "sex": "Female", "dob": "11 Jan 2025", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500082", "breed": "LIM", "sex": "Female", "dob": "22 Jan 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500109", "breed": "BALX", "sex": "Male", "dob": "14 Aug 2023", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500088", "breed": "BALX", "sex": "Female", "dob": "28 Jul 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500079", "breed": "BF", "sex": "Female", "dob": "27 Sep 2022", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500113", "breed": "HER", "sex": "Female", "dob": "25 Dec 2019", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK987654500103", "breed": "CH", "sex": "Female", "dob": "05 May 2022", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "Unassigned", "cph": "12/312/6802", "vax": [] },
+    { "tag": "UK112233770487", "breed": "BALX", "sex": "Female", "dob": "24 May 2020", "status": "Due Soon", "last": "—", "due": "05 Jun 2026", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233809570", "breed": "SIM", "sex": "Female", "dob": "19 Jul 2019", "status": "Vaccinated", "last": "08 Sep 2025", "due": "03 Apr 2027", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233731262", "breed": "HER", "sex": "Female", "dob": "23 Nov 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233331148", "breed": "DS", "sex": "Male", "dob": "26 Jan 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233456778", "breed": "LIMX", "sex": "Female", "dob": "07 Jun 2019", "status": "Vaccinated", "last": "12 Jun 2025", "due": "13 Feb 2027", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233733052", "breed": "LIMX", "sex": "Female", "dob": "24 Aug 2023", "status": "Vaccinated", "last": "18 May 2025", "due": "13 Feb 2027", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK112233969693", "breed": "BF", "sex": "Male", "dob": "19 Apr 2024", "status": "Vaccinated", "last": "08 May 2025", "due": "02 Nov 2027", "assignedTo": "A. Patel MRCVS", "cph": "12/345/6789", "vax": [] },
+    { "tag": "UK223344183667", "breed": "CH", "sex": "Female", "dob": "13 May 2022", "status": "Overdue", "last": "—", "due": "06 Mar 2026", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK223344472528", "breed": "CH", "sex": "Male", "dob": "23 Nov 2024", "status": "Vaccinated", "last": "06 Sep 2025", "due": "20 Nov 2027", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK223344864544", "breed": "CH", "sex": "Female", "dob": "15 Jul 2021", "status": "Due Soon", "last": "—", "due": "22 Aug 2026", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK223344983794", "breed": "HER", "sex": "Female", "dob": "27 Jan 2021", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK223344380746", "breed": "BALX", "sex": "Female", "dob": "19 Dec 2021", "status": "Due Soon", "last": "—", "due": "21 Sep 2026", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK223344514850", "breed": "BF", "sex": "Male", "dob": "05 May 2020", "status": "Due Soon", "last": "—", "due": "24 Aug 2026", "assignedTo": "J. Hughes MRCVS", "cph": "33/210/0011", "vax": [] },
+    { "tag": "UK334455883300", "breed": "BB", "sex": "Male", "dob": "19 Jul 2021", "status": "Due Soon", "last": "—", "due": "05 Sep 2026", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455195325", "breed": "HER", "sex": "Female", "dob": "05 Nov 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455725380", "breed": "BALX", "sex": "Male", "dob": "13 Oct 2022", "status": "Overdue", "last": "—", "due": "18 Jan 2026", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455813328", "breed": "BALX", "sex": "Male", "dob": "25 Nov 2021", "status": "Vaccinated", "last": "06 Aug 2025", "due": "10 Jul 2027", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455103402", "breed": "LIMX", "sex": "Female", "dob": "17 Feb 2024", "status": "Overdue", "last": "—", "due": "27 May 2026", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455738551", "breed": "CH", "sex": "Female", "dob": "12 Mar 2023", "status": "Vaccinated", "last": "16 Jan 2025", "due": "20 Jun 2027", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455217301", "breed": "LIM", "sex": "Male", "dob": "08 Jan 2020", "status": "Vaccinated", "last": "16 Feb 2025", "due": "03 Dec 2027", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK334455897549", "breed": "SIM", "sex": "Female", "dob": "05 Nov 2022", "status": "Due Soon", "last": "—", "due": "09 Sep 2026", "assignedTo": "S. Okafor MRCVS", "cph": "50/118/2204", "vax": [] },
+    { "tag": "UK445566322086", "breed": "SIM", "sex": "Female", "dob": "23 May 2022", "status": "Overdue", "last": "—", "due": "15 May 2026", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK445566573417", "breed": "BALX", "sex": "Female", "dob": "08 Feb 2021", "status": "Vaccinated", "last": "08 Oct 2025", "due": "19 Sep 2027", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK445566330914", "breed": "HER", "sex": "Female", "dob": "23 Nov 2019", "status": "Due Soon", "last": "—", "due": "03 Jun 2026", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK445566446479", "breed": "BALX", "sex": "Female", "dob": "09 Nov 2022", "status": "Due Soon", "last": "—", "due": "18 Jul 2026", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK445566858490", "breed": "BB", "sex": "Male", "dob": "08 Aug 2022", "status": "Due Soon", "last": "—", "due": "04 Jun 2026", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK445566790993", "breed": "HF", "sex": "Male", "dob": "14 Jul 2022", "status": "Vaccinated", "last": "21 Feb 2025", "due": "22 Nov 2027", "assignedTo": "Unassigned", "cph": "21/004/5567", "vax": [] },
+    { "tag": "UK556677163556", "breed": "HF", "sex": "Male", "dob": "26 Feb 2020", "status": "Due Soon", "last": "—", "due": "07 Sep 2026", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677246991", "breed": "HF", "sex": "Female", "dob": "09 Aug 2020", "status": "Vaccinated", "last": "04 Jan 2025", "due": "15 Sep 2027", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677783823", "breed": "SIM", "sex": "Female", "dob": "03 Apr 2020", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677609231", "breed": "DS", "sex": "Female", "dob": "28 Jul 2019", "status": "Due Soon", "last": "—", "due": "13 Jun 2026", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677509386", "breed": "LIMX", "sex": "Male", "dob": "10 Jul 2024", "status": "Not Vaccinated", "last": "—", "due": "", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677262316", "breed": "CH", "sex": "Male", "dob": "07 Jan 2023", "status": "Vaccinated", "last": "02 Jan 2025", "due": "24 Jun 2027", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677712554", "breed": "DS", "sex": "Female", "dob": "02 Sep 2019", "status": "Due Soon", "last": "—", "due": "03 Jun 2026", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677808011", "breed": "CH", "sex": "Male", "dob": "04 Oct 2020", "status": "Vaccinated", "last": "14 Nov 2025", "due": "20 Feb 2027", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] },
+    { "tag": "UK556677712024", "breed": "BB", "sex": "Male", "dob": "09 Apr 2024", "status": "Overdue", "last": "—", "due": "08 Mar 2026", "assignedTo": "A. Patel MRCVS", "cph": "64/083/5927", "vax": [] }
+  ],
+
+  // Case-management model: each case is a vaccination task for one animal.
+  // Stage drives the Path component on the case record page.
+  // Holdings (County Parish Holdings) — the scoping unit. A holding's herd is
+  // the cattle whose cph matches. headCount is the real herd size (the prototype
+  // only carries a few sample animals per holding).
+  "holdings": [
+    { "cph": "12/345/6789", "name": "New Barn Farm", "postcode": "EX5 2AB", "county": "Devon", "office": "Polwhele", "headCount": 142,
+      "address": "New Barn Farm, Crediton, EX5 2AB", "type": "Beef", "bulls": 2, "contact": "Charles Marsh", "phone": "07700 900 142",
+      "tbStatus": "OTF — Officially TB Free", "lastTestDate": "12 Mar 2025", "lastTestType": "Whole herd test", "riskArea": "High",
+      "testInterval": "6 monthly", "nextSkinTest": "Sep 2025", "nextSkinTestState": "Overdue" },
+    { "cph": "33/210/0011", "name": "Wolland Farm", "postcode": "TR4 9JT", "county": "Cornwall", "office": "Polwhele", "headCount": 88,
+      "address": "Wolland Farm, Truro, TR4 9JT", "type": "Dairy", "bulls": 1, "contact": "Tom King", "phone": "07700 900 088",
+      "tbStatus": "OTF-W — TB Free Withdrawn", "lastTestDate": "20 Feb 2026", "lastTestType": "Whole herd test", "riskArea": "High",
+      "testInterval": "6 monthly", "nextSkinTest": "Aug 2026", "nextSkinTestState": "" },
+    { "cph": "50/118/2204", "name": "Hill Top Farm", "postcode": "LA2 8DR", "county": "Cumbria", "office": "Carlisle", "headCount": 210,
+      "address": "Hill Top Farm, Kendal, LA2 8DR", "type": "Beef", "bulls": 3, "contact": "Marcus Quennell", "phone": "07700 900 210",
+      "tbStatus": "OTF — Officially TB Free", "lastTestDate": "05 Jan 2025", "lastTestType": "Whole herd test", "riskArea": "Low",
+      "testInterval": "4 yearly", "nextSkinTest": "Jan 2029", "nextSkinTestState": "" },
+    { "cph": "21/004/5567", "name": "Marsh End Farm", "postcode": "YO7 3LP", "county": "North Yorkshire", "office": "Thirsk", "headCount": 64,
+      "address": "Marsh End Farm, Thirsk, YO7 3LP", "type": "Mixed", "bulls": 1, "contact": "Ingrid Castellano", "phone": "07700 900 064",
+      "tbStatus": "OTF-S — TB Free Suspended", "lastTestDate": "28 Apr 2026", "lastTestType": "Check test", "riskArea": "Edge",
+      "testInterval": "Annually", "nextSkinTest": "Apr 2026", "nextSkinTestState": "Overdue" },
+    { "cph": "64/083/5927", "name": "Castellano Farm", "postcode": "GL7 1RR", "county": "Gloucestershire", "office": "Gloucester", "headCount": 301,
+      "address": "Castellano Farm, Cirencester, GL7 1RR", "type": "Dairy", "bulls": 4, "contact": "Zara Mcintyre", "phone": "07700 900 301",
+      "tbStatus": "OTF — Officially TB Free", "lastTestDate": "15 Nov 2025", "lastTestType": "Whole herd test", "riskArea": "High",
+      "testInterval": "6 monthly", "nextSkinTest": "May 2026", "nextSkinTestState": "Overdue" },
+    { "cph": "12/312/6802", "name": "Mill House Farm", "postcode": "DL10 4NP", "county": "North Yorkshire", "office": "Northallerton", "headCount": 38,
+      "address": "Mill House Farm, Richmond, DL10 4NP", "type": "Dairy", "bulls": 1, "contact": "James Millburn", "phone": "07700 412 559",
+      "tbStatus": "OTF — Officially TB Free", "lastTestDate": "26 May 2024", "lastTestType": "Whole herd test", "riskArea": "Edge",
+      "testInterval": "2 yearly", "nextSkinTest": "May 2026", "nextSkinTestState": "Overdue" }
+  ],
+
+  "caseStages": ["Scheduled", "Due", "Administered", "Recorded"],
+  "cases": [
+    { "ref": "CV-2026-0142", "tagIdx": 0, "priority": "Routine", "requested": "02 Jun 2026", "due": "18 Jun 2026", "stage": "Due",         "assignedTo": "A. Patel MRCVS", "holding": "12/345/6789" },
+    { "ref": "CV-2026-0143", "tagIdx": 1, "priority": "Urgent",  "requested": "05 Jun 2026", "due": "12 Jun 2026", "stage": "Scheduled",   "assignedTo": "J. Hughes MRCVS", "holding": "12/345/6789" },
+    { "ref": "CV-2026-0144", "tagIdx": 2, "priority": "Routine", "requested": "01 Jun 2026", "due": "20 Jun 2026", "stage": "Scheduled",   "assignedTo": "Unassigned",      "holding": "33/210/0011" },
+    { "ref": "CV-2026-0145", "tagIdx": 3, "priority": "Routine", "requested": "28 May 2026", "due": "15 May 2026", "stage": "Administered", "assignedTo": "A. Patel MRCVS", "holding": "33/210/0011" },
+    { "ref": "CV-2026-0146", "tagIdx": 4, "priority": "Urgent",  "requested": "20 May 2026", "due": "01 Feb 2026", "stage": "Recorded",     "assignedTo": "J. Hughes MRCVS", "holding": "50/118/2204" }
+  ]
+}

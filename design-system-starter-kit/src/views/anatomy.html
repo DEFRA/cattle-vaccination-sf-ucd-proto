@@ -1,0 +1,154 @@
+{#
+  Anatomy of a page — the building blocks & why.
+  A reference page (linked from the footer) explaining the standard segments
+  that make up a Salesforce page, with a mini example and the "why" for each.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<style>
+  .an-seg { background: #fdf3da; border: 1px solid #eccf7e; border-radius: 0.5rem; }
+  .an-num { width: 1.6rem; height: 1.6rem; border-radius: 50%; background: #fff; border: 1px solid #eccf7e; color: #7a5b00; font-weight: 700; display: inline-flex; align-items: center; justify-content: center; }
+  .an-why { color: #6b5a2a; }
+  .an-demo { background: #fff; border: 1px solid #dddddd; border-radius: 0.375rem; }
+  .an-or { color: #5c5c5c; font-weight: 700; }
+  /* mini console bar */
+  .an-cbar { display: flex; align-items: center; gap: 0.75rem; padding: 0.5rem 0.75rem; }
+  .an-waffle { display: grid; grid-template-columns: repeat(3, 3px); grid-gap: 2px; }
+  .an-waffle span { width: 3px; height: 3px; background: #a0a0a0; display: block; }
+  .an-tab-active { color: #1b96ff; font-weight: 700; border-bottom: 2px solid #1b96ff; padding-bottom: 4px; }
+  /* mini path */
+  .an-path { display: flex; gap: 4px; flex-wrap: wrap; }
+  .an-stage { font-size: 0.7rem; padding: 3px 12px; border-radius: 3px; background: #eef0f2; color: #7a7a7a; }
+  .an-stage_done { background: #0b5394; color: #fff; }
+  /* pills reuse apha-pill */
+</style>
+
+<div class="slds-p-around_medium" style="max-width:72rem;">
+
+  <h1 class="slds-text-heading_large">Anatomy of a page — the building blocks &amp; why</h1>
+  <p class="slds-text-body_regular slds-text-color_weak slds-m-top_xx-small slds-m-bottom_medium">
+    Every Salesforce page is assembled from these standard segments, stacked top to bottom. Each maps to a standard component, so the structure stays consistent and buildable.
+  </p>
+
+  <!-- 1. App bar -->
+  <div class="an-seg slds-grid slds-wrap slds-p-around_medium slds-m-bottom_small">
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-grid">
+      <div class="slds-p-right_small"><span class="an-num">1</span></div>
+      <div>
+        <h2 class="slds-text-heading_small">App bar — service name, selector &amp; open record tabs</h2>
+        <p class="an-why slds-text-body_small slds-m-top_xx-small"><strong>Why:</strong> switch between services and keep several records open at once, each as a closable tab (Console navigation).</p>
+      </div>
+    </div>
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small slds-m-top_x-small">
+      <div class="an-demo an-cbar">
+        <span class="an-waffle"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span>
+        <strong class="slds-text-body_small">APHA Services</strong>
+        <span class="slds-text-body_small slds-text-color_weak">License applications &#9662;</span>
+        <span class="slds-text-body_small an-tab-active">Application 2UWNW21T &times;</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. Page header -->
+  <div class="an-seg slds-grid slds-wrap slds-p-around_medium slds-m-bottom_small">
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-grid">
+      <div class="slds-p-right_small"><span class="an-num">2</span></div>
+      <div>
+        <h2 class="slds-text-heading_small">Page header — title &amp; key-info breakdown</h2>
+        <p class="an-why slds-text-body_small slds-m-top_xx-small"><strong>Why:</strong> confirms which record you are on and surfaces its most important fields at a glance (Highlights panel / Compact Layout).</p>
+      </div>
+    </div>
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small slds-m-top_x-small">
+      <div class="an-demo slds-p-around_small">
+        <div class="slds-grid slds-grid_vertical-align-center">
+          <span class="slds-icon_container slds-icon-standard-case slds-m-right_x-small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#case"></use></svg></span>
+          <div><div class="slds-text-body_small slds-text-color_weak">Case reference</div><div class="slds-text-heading_small">2UWNW21T</div></div>
+        </div>
+        <div class="slds-grid slds-gutters slds-m-top_x-small slds-text-body_small">
+          <div class="slds-col"><div class="slds-text-color_weak" style="font-size:.7rem;">Requested</div>8 May 2026</div>
+          <div class="slds-col"><div class="slds-text-color_weak" style="font-size:.7rem;">Origin name</div>Charles Marsh</div>
+          <div class="slds-col"><div class="slds-text-color_weak" style="font-size:.7rem;">Origin CPH</div>35/251/0018</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Status & actions -->
+  <div class="an-seg slds-grid slds-wrap slds-p-around_medium slds-m-bottom_small">
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-grid">
+      <div class="slds-p-right_small"><span class="an-num">3</span></div>
+      <div>
+        <h2 class="slds-text-heading_small">Status &amp; actions — filter (lists) or case-status Path (records)</h2>
+        <p class="an-why slds-text-body_small slds-m-top_xx-small"><strong>Why:</strong> shows where the case sits in its process and the single next action to take. On lists, filter tabs narrow the data (Path / List Views).</p>
+      </div>
+    </div>
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small slds-m-top_x-small">
+      <div class="an-demo slds-p-around_small">
+        <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+          <div class="an-path">
+            <span class="an-stage an-stage_done">Allocation</span>
+            <span class="an-stage">Verification</span>
+            <span class="an-stage">Risk assessment</span>
+            <span class="an-stage">Issuance</span>
+          </div>
+          <span class="apha-pill" style="background:#1b96ff;color:#fff;">Mark stage as Complete</span>
+        </div>
+        <p class="slds-text-body_small slds-m-top_x-small"><strong>Guidance for Verification</strong></p>
+        <p class="slds-text-body_small slds-text-color_weak">• Check the applicant's contact details match APHA records</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. Body -->
+  <h2 class="slds-text-heading_small slds-m-top_medium slds-m-bottom_x-small">4 &nbsp; Body — choose the pattern that fits the job</h2>
+  <div class="slds-grid slds-gutters slds-wrap slds-grid_vertical-align-center">
+
+    <!-- Tabular -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+      <div class="an-seg slds-p-around_medium">
+        <h3 class="slds-text-title_caps slds-text-color_weak">Tabular data with ordering</h3>
+        <p class="an-why slds-text-body_small slds-m-vertical_x-small"><strong>Why:</strong> scan, sort and triage many records — a work queue or list view.</p>
+        <div class="an-demo slds-p-around_x-small">
+          <table class="slds-table slds-table_bordered apha-table" style="font-size:.75rem;">
+            <thead><tr class="slds-line-height_reset"><th><div class="slds-text-title_caps">Reference</div></th><th><div class="slds-text-title_caps">Status</div></th><th><div class="slds-text-title_caps">Assigned to</div></th></tr></thead>
+            <tbody>
+              <tr><td><a href="javascript:void(0);">E224CFE0</a></td><td><span class="apha-tag">Receipt</span></td><td>Ben Bond</td></tr>
+              <tr><td><a href="javascript:void(0);">E224CFE1</a></td><td><span class="apha-pill apha-pill_green">Issued</span></td><td>S. Flint</td></tr>
+              <tr><td><a href="javascript:void(0);">E224CFE2</a></td><td><span class="apha-pill apha-pill_amber">Risk assess</span></td><td>J. Parkyn</td></tr>
+              <tr><td><a href="javascript:void(0);">E224CFE3</a></td><td><span class="apha-pill apha-pill_red">Rejected</span></td><td>Unassigned</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-text-align_center"><span class="an-or">or</span></div>
+
+    <!-- Tabbed -->
+    <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+      <div class="an-seg slds-p-around_medium">
+        <h3 class="slds-text-title_caps slds-text-color_weak">Tabbed data &amp; tasks + side panel</h3>
+        <p class="an-why slds-text-body_small slds-m-vertical_x-small"><strong>Why:</strong> group detailed fields into tabs; side panel for summary, next best action and knowledge — a record page.</p>
+        <div class="slds-grid slds-gutters">
+          <div class="slds-col slds-size_2-of-3">
+            <div class="an-demo slds-p-around_x-small">
+              <p class="slds-text-body_small"><span class="an-tab-active">Case details</span> &nbsp;<span class="slds-text-color_weak">Movement</span> &nbsp;<span class="slds-text-color_weak">Messages</span></p>
+              <div class="apha-section slds-m-top_x-small" style="cursor:default;">Receipting</div>
+              <div class="apha-section" style="cursor:default;">Allocation</div>
+            </div>
+          </div>
+          <div class="slds-col slds-size_1-of-3">
+            <div class="an-demo slds-p-around_xx-small slds-m-bottom_xx-small"><div class="slds-text-body_small"><strong>Next Best Action</strong></div></div>
+            <div class="an-demo slds-p-around_xx-small slds-m-bottom_xx-small"><div class="slds-text-body_small"><strong>Case summary</strong></div></div>
+            <div class="an-demo slds-p-around_xx-small"><div class="slds-text-body_small"><strong>Knowledge</strong></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% endblock %}

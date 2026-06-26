@@ -1,0 +1,384 @@
+{#
+  Configurable Styleguide
+  The subset of the design system an admin can assemble with clicks — no code,
+  no custom CSS, no "hacking". Each block is tagged with a status and the
+  Setup path you'd actually use. Code-only pieces are listed at the bottom.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<style>
+  .cfg-path { font-family: monospace; font-size: 12px; color: #514f4d; background: #f3f3f3; border-radius: .25rem; padding: 2px 6px; display: inline-block; }
+  .cfg-tile { border: 1px dashed #c9c9c9; border-radius: .25rem; }
+</style>
+
+<div class="slds-p-around_medium">
+
+  <!-- Intro / legend -->
+  <div class="slds-box slds-theme_shade slds-m-bottom_medium">
+    <h1 class="slds-text-heading_large">Configurable Styleguide</h1>
+    <p class="slds-text-body_regular slds-m-top_x-small slds-text-color_weak">
+      Everything below can be built in Salesforce with configuration only — no Apex, LWC, or custom CSS.
+      Each block shows its status and the Setup path you'd use.
+    </p>
+    <p class="slds-m-top_small">
+      <span class="slds-badge slds-theme_success">Configurable</span>
+      <span class="slds-text-body_small slds-text-color_weak slds-m-right_medium">Fully buildable with clicks</span>
+      <span class="slds-badge slds-theme_warning">Partial</span>
+      <span class="slds-text-body_small slds-text-color_weak">Buildable, but with limits noted</span>
+    </p>
+  </div>
+
+  <!-- ===== Themes & Branding ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Themes &amp; Branding (the one colour knob)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_warning">Partial</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → Themes and Branding</span></p>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">
+        You can set a brand colour, global-header and page-background colours, a logo, the loading background, and a favicon — per app.
+        A single brand colour applies cleanly; richer multi-colour systems fall back to Salesforce defaults.
+      </p>
+      <div class="slds-grid slds-gutters slds-wrap">
+        <div class="slds-col slds-size_1-of-4"><div class="cfg-tile slds-p-around_small slds-text-align_center" style="background:#0b827c;color:#fff;">Brand colour</div></div>
+        <div class="slds-col slds-size_1-of-4"><div class="cfg-tile slds-p-around_small slds-text-align_center">Header colour</div></div>
+        <div class="slds-col slds-size_1-of-4"><div class="cfg-tile slds-p-around_small slds-text-align_center">Page background</div></div>
+        <div class="slds-col slds-size_1-of-4"><div class="cfg-tile slds-p-around_small slds-text-align_center">Logo / favicon</div></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== App & Navigation ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">App &amp; Navigation Bar</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → App Manager → New/Edit Lightning App → Navigation Items</span></p>
+      <p class="slds-text-body_small slds-text-color_weak">The app name and the tabs in the navigation bar (Cattle, Vaccinations, Reports…) — exactly the header used across this prototype — are set here.</p>
+    </div>
+  </article>
+
+  <!-- ===== Highlights Panel + Compact Layout ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Highlights Panel (record header)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → Object Manager → Cattle → Compact Layouts</span></p>
+      <div class="slds-page-header">
+        <div class="slds-page-header__row">
+          <div class="slds-page-header__col-title">
+            <div class="slds-media">
+              <div class="slds-media__figure">
+                <span class="slds-icon_container slds-icon-custom-custom19"><svg class="slds-icon slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom19"></use></svg></span>
+              </div>
+              <div class="slds-media__body">
+                <div class="slds-page-header__name"><div class="slds-page-header__name-title"><h1><span>Cattle</span><span class="slds-page-header__title slds-truncate">UK582910001<strong>25</strong></span></h1></div></div>
+                <p class="slds-page-header__name-meta">Cattle · Breed HER</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="slds-page-header__row slds-page-header__row_gutters">
+          <div class="slds-page-header__col-details">
+            <ul class="slds-page-header__detail-row">
+              <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Ear Tag Number</div><div class="slds-truncate">UK58291000125</div></li>
+              <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Breed</div><div class="slds-truncate">HER</div></li>
+              <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Last Vaccinated</div><div class="slds-truncate">02 Apr 2026</div></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">The fields shown in the header come from the Compact Layout. (The coloured status badge in the real app needs code — see excluded list.)</p>
+    </div>
+  </article>
+
+  <!-- ===== Dynamic Forms ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Record Detail Fields (Dynamic Forms)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Lightning App Builder → Record Page → Fields / Field Sections</span></p>
+      <div class="slds-grid slds-wrap slds-gutters">
+        <div class="slds-col slds-size_1-of-2">
+          <div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Ear Tag Number</span><div class="slds-form-element__control"><div class="slds-form-element__static">UK58291000125</div></div></div>
+          <div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Breed</span><div class="slds-form-element__control"><div class="slds-form-element__static">HER</div></div></div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+          <div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Date of Birth</span><div class="slds-form-element__control"><div class="slds-form-element__static">14 Mar 2021</div></div></div>
+          <div class="slds-form-element slds-form-element_readonly slds-m-bottom_small"><span class="slds-form-element__label">Sex</span><div class="slds-form-element__control"><div class="slds-form-element__static">Female</div></div></div>
+        </div>
+      </div>
+      <p class="slds-text-body_small slds-text-color_weak">Drag individual fields/sections, arrange in columns, and add visibility rules — all no-code.</p>
+    </div>
+  </article>
+
+  <!-- ===== Tabs ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Tabs</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Lightning App Builder → Tabs component</span></p>
+      <div class="slds-tabs_default" data-tabset="c">
+        <ul class="slds-tabs_default__nav" role="tablist">
+          <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="c-1" onclick="cfgTab(this)">Details</a></li>
+          <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="c-2" onclick="cfgTab(this)">Vaccination History</a></li>
+        </ul>
+        <div id="c-1" class="slds-tabs_default__content slds-show" role="tabpanel">Record detail fields live here.</div>
+        <div id="c-2" class="slds-tabs_default__content slds-hide" role="tabpanel">A related list lives here.</div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== Accordion ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Accordion</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Lightning App Builder → Accordion component</span></p>
+      <ul class="slds-accordion">
+        <li class="slds-accordion__list-item">
+          <section class="slds-accordion__section slds-is-open">
+            <div class="slds-accordion__summary">
+              <h3 class="slds-accordion__summary-heading">
+                <button class="slds-button slds-button_reset slds-accordion__summary-action" aria-expanded="true" onclick="cfgAccordion(this)">
+                  <svg class="slds-accordion__summary-action-icon slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#switch"></use></svg>
+                  <span class="slds-accordion__summary-content">Animal details</span>
+                </button>
+              </h3>
+            </div>
+            <div class="slds-accordion__content">Fields and sections shown here.</div>
+          </section>
+        </li>
+      </ul>
+    </div>
+  </article>
+
+  <!-- ===== Related Lists / List Views ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">List Views &amp; Related Lists (tables)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">List View Controls → New / Select Fields to Display · Page Layout → Related Lists</span></p>
+      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+        <thead><tr class="slds-line-height_reset"><th scope="col"><div class="slds-truncate slds-text-title_caps">Ear Tag</div></th><th scope="col"><div class="slds-truncate slds-text-title_caps">Breed</div></th><th scope="col"><div class="slds-truncate slds-text-title_caps">DOB</div></th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><div class="slds-truncate"><a href="javascript:void(0);">UK58291000125</a></div></th><td>HER</td><td>14 Mar 2021</td></tr>
+          <tr><th scope="row"><div class="slds-truncate"><a href="javascript:void(0);">UK58291000128</a></div></th><td>CH</td><td>09 Sep 2020</td></tr>
+        </tbody>
+      </table>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">Columns, filters, sorting, and inline edit are all configurable. (Editable bulk grids for new records still need a Flow or code.)</p>
+    </div>
+  </article>
+
+  <!-- ===== Path ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Path</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → Path Settings → New Path</span></p>
+      <div class="slds-path">
+        <div class="slds-grid slds-path__track">
+          <div class="slds-grid slds-path__scroller-container">
+            <div class="slds-path__scroller">
+              <div class="slds-path__scroller_inner">
+                <ul class="slds-path__nav" role="listbox">
+                  <li class="slds-path__item slds-is-complete" role="presentation"><a class="slds-path__link" href="javascript:void(0);"><span class="slds-path__stage"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg></span><span class="slds-path__title">Scheduled</span></a></li>
+                  <li class="slds-path__item slds-is-current slds-is-active" role="presentation"><a class="slds-path__link" href="javascript:void(0);"><span class="slds-path__stage"></span><span class="slds-path__title">Due</span></a></li>
+                  <li class="slds-path__item slds-is-incomplete" role="presentation"><a class="slds-path__link" href="javascript:void(0);"><span class="slds-path__stage"></span><span class="slds-path__title">Administered</span></a></li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== Field Inputs by Type ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Form Inputs (rendered from field type)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → Object Manager → Cattle → Fields &amp; Relationships → New</span></p>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_medium">You choose the field's data type; Salesforce renders the matching input automatically.</p>
+      <div class="slds-grid slds-gutters slds-wrap">
+        <div class="slds-col slds-size_1-of-2">
+          <div class="slds-form-element slds-m-bottom_small"><label class="slds-form-element__label">Text field → input</label><div class="slds-form-element__control"><input type="text" class="slds-input" value="UK58291000125" /></div></div>
+          <div class="slds-form-element slds-m-bottom_small"><label class="slds-form-element__label">Picklist → dropdown</label><div class="slds-form-element__control"><div class="slds-select_container"><select class="slds-select"><option>Hereford</option><option>Charolais</option></select></div></div></div>
+          <div class="slds-form-element slds-m-bottom_small"><label class="slds-form-element__label">Date → datepicker</label><div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right"><input type="text" class="slds-input" value="14/03/2021" /><span class="slds-icon_container slds-icon-utility-event slds-input__icon slds-input__icon_right"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#event"></use></svg></span></div></div>
+        </div>
+        <div class="slds-col slds-size_1-of-2">
+          <div class="slds-form-element slds-m-bottom_small"><label class="slds-form-element__label">Long text → textarea</label><div class="slds-form-element__control"><textarea class="slds-textarea"></textarea></div></div>
+          <div class="slds-form-element slds-m-bottom_small"><label class="slds-form-element__label">Checkbox → checkbox</label><div class="slds-form-element__control"><div class="slds-checkbox"><input type="checkbox" id="cfg-cb" checked /><label class="slds-checkbox__label" for="cfg-cb"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label">Vaccinated</span></label></div></div></div>
+        </div>
+      </div>
+      <p class="slds-text-body_small slds-text-color_error slds-m-top_x-small">Note: a checkbox field renders as a checkbox — not a toggle switch. Toggles require code.</p>
+    </div>
+  </article>
+
+  <!-- ===== Field Help / Tooltip ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Field-Level Help (tooltip)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Object Manager → Field → Help Text</span></p>
+      <div class="slds-form-element">
+        <label class="slds-form-element__label">Ear Tag Number
+          <span class="slds-icon_container slds-icon-utility-info slds-m-left_xx-small" title="The unique BCMS ear tag for this animal.">
+            <svg class="slds-icon slds-icon_xx-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use></svg>
+          </span>
+        </label>
+        <div class="slds-form-element__control"><input type="text" class="slds-input" value="UK58291000125" /></div>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== In-App Guidance ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">In-App Guidance (prompts &amp; walkthroughs)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_success">Configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → In-App Guidance → Add</span></p>
+      <section class="slds-popover slds-nubbin_left" role="dialog" style="position:relative; left:1rem; max-width:22rem;">
+        <div class="slds-popover__body"><p><strong>New here?</strong> Use Log a Vaccination to record a vet visit for an animal.</p></div>
+      </section>
+    </div>
+  </article>
+
+  <!-- ===== Actions / Buttons ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Actions &amp; Buttons</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_warning">Partial</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Object Manager → Buttons, Links, and Actions · Page Layout → Mobile &amp; Lightning Actions</span></p>
+      <button class="slds-button slds-button_neutral">Edit</button>
+      <button class="slds-button slds-button_neutral">Log Vaccination</button>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">You create the actions and their order; Salesforce decides the button styling — you don't pick brand vs neutral colours.</p>
+    </div>
+  </article>
+
+  <!-- ===== Icons ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Object &amp; Tab Icons</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_warning">Partial</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Setup → Tab → Tab Style (pick icon + colour)</span></p>
+      <div class="slds-grid slds-grid_vertical-align-center">
+        <span class="slds-icon_container slds-icon-custom-custom19 slds-m-right_small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom19"></use></svg></span>
+        <span class="slds-icon_container slds-icon-custom-custom51 slds-m-right_small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom51"></use></svg></span>
+        <span class="slds-text-body_small slds-text-color_weak">Chosen from Salesforce's standard icon set — you can't upload arbitrary icons.</span>
+      </div>
+    </div>
+  </article>
+
+  <!-- ===== Page Layout / Regions ===== -->
+  <article class="slds-card slds-m-bottom_medium">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Page Layout &amp; Regions (grid)</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_warning">Partial</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-m-bottom_small"><span class="cfg-path">Lightning App Builder → Page Template (1 / 2 / 3 regions)</span></p>
+      <div class="slds-grid slds-gutters">
+        <div class="slds-col slds-size_2-of-3"><div class="cfg-tile slds-p-around_small slds-text-align_center">Main region</div></div>
+        <div class="slds-col slds-size_1-of-3"><div class="cfg-tile slds-p-around_small slds-text-align_center">Sidebar region</div></div>
+      </div>
+      <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">You pick from standard region templates and column counts — not arbitrary widths.</p>
+    </div>
+  </article>
+
+  <!-- ===== Requires code (excluded) ===== -->
+  <article class="slds-card slds-m-bottom_medium slds-theme_shade">
+    <div class="slds-card__header slds-grid">
+      <header class="slds-media slds-media_center slds-has-flexi-truncate">
+        <div class="slds-media__body"><h2 class="slds-card__header-title slds-text-heading_small">Requires code or CSS — excluded from this build</h2></div>
+        <div class="slds-no-flex"><span class="slds-badge slds-theme_error">Not configurable</span></div>
+      </header>
+    </div>
+    <div class="slds-card__body slds-card__body_inner">
+      <p class="slds-text-body_small slds-text-color_weak slds-m-bottom_small">These appeared in the full styleguide but can't be assembled by an admin without a custom LWC/Aura component or custom CSS:</p>
+      <ul class="slds-list_dotted slds-text-body_small">
+        <li>Toggle switches (checkbox fields render as checkboxes)</li>
+        <li>Standalone badges, pills, avatars, spinners, progress rings/bars as decorative elements</li>
+        <li>Custom status colours (e.g. green/amber/red "Vaccinated/Overdue" badges)</li>
+        <li>Manually placed alerts, toasts, and empty-state illustrations</li>
+        <li>Custom fonts, arbitrary component colours, and free-form layouts/grids</li>
+        <li>Editable multi-row grids for creating new records (use a Screen Flow instead)</li>
+      </ul>
+    </div>
+  </article>
+
+</div>
+
+<script>
+  function cfgTab(link) {
+    var set = link.closest('[data-tabset]');
+    set.querySelectorAll('[role=tab]').forEach(function (a) { a.parentNode.classList.remove('slds-is-active'); });
+    link.parentNode.classList.add('slds-is-active');
+    set.querySelectorAll('[role=tabpanel]').forEach(function (p) { p.classList.add('slds-hide'); p.classList.remove('slds-show'); });
+    var panel = document.getElementById(link.getAttribute('data-tab'));
+    panel.classList.remove('slds-hide'); panel.classList.add('slds-show');
+  }
+  function cfgAccordion(btn) {
+    var section = btn.closest('.slds-accordion__section');
+    var open = section.classList.toggle('slds-is-open');
+    btn.setAttribute('aria-expanded', open);
+  }
+</script>
+
+{% endblock %}

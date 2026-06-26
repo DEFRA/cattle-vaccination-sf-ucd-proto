@@ -1,0 +1,82 @@
+{#
+  Cattle Vaccinations MVP — cut-down service.
+  Search by ear tag number only; results are READ-ONLY (no click-through to a record).
+  Maps to: a Lightning App Home page with a single search input + a read-only data table
+  (or a list view with row actions disabled). Standard config only.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<div class="slds-p-around_medium" style="max-width:60rem;">
+
+  <h1 class="slds-text-heading_large">Cattle Vaccinations MVP</h1>
+  <p class="slds-text-body_regular slds-text-color_weak slds-m-top_xx-small slds-m-bottom_medium">Search for an animal by ear tag number to check its bovine TB vaccination status.</p>
+
+  <!-- Search by ear tag -->
+  <div class="slds-box" style="background:#fff;">
+    <div class="slds-form-element" style="max-width:32rem;">
+      <label class="slds-form-element__label" for="mvp-q">Ear tag number</label>
+      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg></span>
+        <input type="search" id="mvp-q" class="slds-input" oninput="mvpSearch()" />
+      </div>
+      <div class="slds-form-element__help">For example, UK582910001 25</div>
+    </div>
+  </div>
+
+  <!-- Read-only results (no links / no row click) -->
+  <div id="mvp-results" class="slds-m-top_medium slds-hide">
+    <p class="slds-text-title_caps slds-text-color_weak slds-m-bottom_x-small" id="mvp-count"></p>
+    <table class="slds-table slds-table_cell-buffer slds-table_bordered apha-table" aria-label="Search results">
+      <thead>
+        <tr class="slds-line-height_reset">
+          <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Ear Tag Number">Ear Tag Number</div></th>
+          <th scope="col"><div class="slds-truncate slds-text-title_caps" title="TB Vax">TB Vax</div></th>
+          <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Breed">Breed</div></th>
+          <th scope="col"><div class="slds-truncate slds-text-title_caps" title="Sex">Sex</div></th>
+          <th scope="col"><div class="slds-truncate slds-text-title_caps" title="DOB">DOB</div></th>
+        </tr>
+      </thead>
+      <tbody id="mvp-tbody"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+  VaxStore.apply(cattle);
+
+  function fmtTag(t) { return t.slice(0, -4) + '<strong>' + t.slice(-4) + '</strong>'; }
+  function statusBadge(s) {
+    var m = { 'Vaccinated': 'green', 'Due Soon': 'amber', 'Overdue': 'red', 'Not Vaccinated': 'neutral' };
+    return '<span class="apha-pill apha-pill_' + (m[s] || 'neutral') + '">' + s + '</span>';
+  }
+
+  function mvpSearch() {
+    var q = document.getElementById('mvp-q').value.trim().toLowerCase();
+    var box = document.getElementById('mvp-results'), tb = document.getElementById('mvp-tbody');
+    if (!q) { box.classList.add('slds-hide'); tb.innerHTML = ''; return; }
+    box.classList.remove('slds-hide');
+
+    var hits = cattle.filter(function (c) { return c.tag.toLowerCase().indexOf(q) !== -1; });
+    document.getElementById('mvp-count').textContent = hits.length + (hits.length === 1 ? ' result' : ' results');
+    if (!hits.length) {
+      tb.innerHTML = '<tr><td colspan="5"><div class="slds-text-color_weak slds-p-around_small">No animals match that ear tag.</div></td></tr>';
+      return;
+    }
+    // Read-only rows — no <a> and no row click; this MVP only displays status.
+    tb.innerHTML = hits.map(function (c) {
+      return '<tr>' +
+        '<th scope="row" data-label="Ear Tag Number"><div class="slds-truncate">' + fmtTag(c.tag) + '</div></th>' +
+        '<td data-label="TB Vax"><div class="slds-truncate">' + statusBadge(c.status) + '</div></td>' +
+        '<td data-label="Breed"><div class="slds-truncate">' + c.breed + '</div></td>' +
+        '<td data-label="Sex"><div class="slds-truncate">' + c.sex + '</div></td>' +
+        '<td data-label="DOB"><div class="slds-truncate">' + c.dob + '</div></td>' +
+      '</tr>';
+    }).join('');
+  }
+</script>
+
+{% endblock %}

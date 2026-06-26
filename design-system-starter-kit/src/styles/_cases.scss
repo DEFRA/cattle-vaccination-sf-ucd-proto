@@ -1,0 +1,47 @@
+//
+// Case-management pattern — Console workspace strip + clickable rows.
+// Represents standard Salesforce Console subtabs (not available as static
+// markup in the kit), kept minimal. Everything else is standard SLDS.
+//
+
+.cs-workspace {
+  border-bottom: 1px solid #dddbda;
+}
+
+.cs-wtab {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.8rem;
+  color: #514f4d;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-bottom: none;
+}
+
+.cs-wtab_active {
+  background: #fff;
+  border-color: #dddbda;
+  border-top: 3px solid #008938;
+  border-radius: 0.25rem 0.25rem 0 0;
+  font-weight: 700;
+  color: #080707;
+}
+
+.cs-wtab__close {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #706e6b;
+  padding: 0 0 0 0.25rem;
+  line-height: 1;
+}
+
+.cs-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-background-row-hover;
+  }
+}

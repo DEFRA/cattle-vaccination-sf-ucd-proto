@@ -1,0 +1,416 @@
+{#
+  Vaccination Case — Record Page
+  Follows the APHA segmented pattern, all standard SLDS:
+  1. Console workspace strip (service selector + open record tab)
+  2. Highlights panel (title + key-info breakdown)            → Compact Layout
+  3. Path "case status" + guidance + action + Mark Complete   → Path component
+  4. Tabbed body (Dynamic Forms sections + related list)       → Tabs + Dynamic Forms
+  5. Side panel: Next Best Action / Case summary / Knowledge   → standard components
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<div class="slds-p-around_medium">
+
+  <!-- Success toast shown after a vaccination is logged via the inline flow -->
+  <div id="logged-toast" class="slds-notify_container slds-is-relative slds-m-bottom_small slds-hide">
+    <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+      <span class="slds-assistive-text">success</span>
+      <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg></span>
+      <div class="slds-notify__content"><h2 class="slds-text-heading_small">Vaccination logged and case advanced.</h2></div>
+      <div class="slds-notify__close"><button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="document.getElementById('logged-toast').classList.add('slds-hide')"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button></div>
+    </div>
+  </div>
+
+  <!-- The open record appears as a Console workspace tab in the nav (set via JS). -->
+
+  <!-- 2. Highlights panel -->
+  <div class="slds-page-header slds-page-header_record-home">
+    <div class="slds-page-header__row">
+      <div class="slds-page-header__col-title">
+        <div class="slds-media">
+          <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-case" title="Vaccination case">
+              <svg class="slds-icon slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#case"></use></svg>
+            </span>
+          </div>
+          <div class="slds-media__body">
+            <div class="slds-page-header__name">
+              <div class="slds-page-header__name-title"><h1><span>Vaccination case</span><span class="slds-page-header__title slds-truncate" id="h-ref">Case</span></h1></div>
+            </div>
+            <p class="slds-page-header__name-meta" id="h-meta"></p>
+          </div>
+        </div>
+      </div>
+      <div class="slds-page-header__col-actions">
+        <div class="slds-page-header__controls"><div class="slds-page-header__control">
+          <ul class="slds-button-group-list">
+            <li><button class="slds-button slds-button_neutral">Edit</button></li>
+            <li><a class="slds-button slds-button_brand" id="h-log" href="/schedule-vaccination.html">Log a Vaccination</a></li>
+          </ul>
+        </div></div>
+      </div>
+    </div>
+    <div class="slds-page-header__row slds-page-header__row_gutters">
+      <div class="slds-page-header__col-details">
+        <ul class="slds-page-header__detail-row">
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Animal</div><div class="slds-truncate" id="h-animal"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Priority</div><div class="slds-truncate" id="h-priority"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Stage</div><div class="slds-truncate" id="h-stage"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Assigned To</div><div class="slds-truncate" id="h-assigned"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Due</div><div class="slds-truncate" id="h-due"></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. Path: case status + Mark Complete -->
+  <div class="slds-path slds-m-top_medium">
+    <div class="slds-grid slds-path__track">
+      <div class="slds-grid slds-path__scroller-container">
+        <div class="slds-path__scroller">
+          <div class="slds-path__scroller_inner">
+            <ul class="slds-path__nav" role="listbox" id="path-nav"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="slds-grid slds-path__action">
+        <button class="slds-button slds-button_brand slds-path__mark-complete" id="mark-complete" onclick="markComplete()">
+          <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg>
+          <span id="mark-label">Mark Stage as Complete</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Guidance for current step + action -->
+  <div class="slds-box slds-box_x-small slds-m-top_small">
+    <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center slds-wrap">
+      <div class="slds-col">
+        <p class="slds-text-title_caps slds-text-color_weak">Guidance for <span id="g-stage"></span></p>
+        <ul class="slds-list_dotted slds-m-top_xx-small slds-text-body_small" id="g-list"></ul>
+      </div>
+      <div class="slds-no-flex slds-m-top_x-small"><a class="slds-button slds-button_brand" id="g-action" href="javascript:void(0);"></a></div>
+    </div>
+  </div>
+
+  <!-- 4 + 5. Tabbed body + side panel -->
+  <div class="slds-grid slds-gutters slds-wrap slds-m-top_medium">
+
+    <!-- LEFT: tabs -->
+    <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12">
+      <!-- Inline flow panel — the prototype equivalent of an embedded Flow component -->
+      <div id="inline-flow" class="slds-card slds-card_boundary slds-m-bottom_small slds-hide">
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure"><span class="slds-icon_container slds-icon-custom-custom51"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom51"></use></svg></span></div>
+            <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Log a Vaccination</span></h2></div>
+            <div class="slds-no-flex"><button class="slds-button slds-button_icon slds-button_icon-border-filled" title="Close" onclick="closeFlow()"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button></div>
+          </header>
+        </div>
+        <div class="slds-card__body">
+          <iframe id="flow-frame" title="Log a Vaccination" style="width:100%;height:720px;border:0;display:block;"></iframe>
+        </div>
+      </div>
+
+      <div class="slds-tabs_default" data-tabset="case">
+        <ul class="slds-tabs_default__nav" role="tablist">
+          <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="t-details" onclick="caseTab(this)">Case details</a></li>
+          <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="t-history" onclick="caseTab(this)">Vaccination history</a></li>
+          <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-tab="t-messages" onclick="caseTab(this)">Messages</a></li>
+        </ul>
+
+        <!-- Case details: Dynamic Forms style sections (grey bars + inline-edit fields) -->
+        <div id="t-details" class="slds-tabs_default__content slds-show" role="tabpanel">
+          <div class="apha-section" onclick="toggleSection(this)"><svg class="apha-section__chevron" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>Animal details</div>
+          <div class="apha-section__body">
+            <div class="slds-grid slds-wrap slds-gutters">
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Ear Tag Number</span><span class="apha-field__value" id="d-tag"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+                <div class="apha-field"><span class="apha-field__label">Breed</span><span class="apha-field__value" id="d-breed"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Sex</span><span class="apha-field__value" id="d-sex"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+                <div class="apha-field"><span class="apha-field__label">Date of Birth</span><span class="apha-field__value" id="d-dob"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="apha-section" onclick="toggleSection(this)"><svg class="apha-section__chevron" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>Vaccination details</div>
+          <div class="apha-section__body">
+            <div class="slds-grid slds-wrap slds-gutters">
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Stage</span><span class="apha-field__value" id="d-stage"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+                <div class="apha-field"><span class="apha-field__label">Due</span><span class="apha-field__value" id="d-due"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Last Vaccinated</span><span class="apha-field__value" id="d-last"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="apha-section" onclick="toggleSection(this)"><svg class="apha-section__chevron" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg>Allocation</div>
+          <div class="apha-section__body">
+            <div class="slds-grid slds-wrap slds-gutters">
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Assigned To</span><span class="apha-field__value" id="d-assigned"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+                <div class="apha-field"><span class="apha-field__label">Holding (CPH)</span><span class="apha-field__value" id="d-holding"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+                <div class="apha-field"><span class="apha-field__label">Priority</span><span class="apha-field__value" id="d-priority"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+                <div class="apha-field"><span class="apha-field__label">Requested</span><span class="apha-field__value" id="d-requested"></span><svg class="apha-field__caret" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vaccination history: related list -->
+        <div id="t-history" class="slds-tabs_default__content slds-hide" role="tabpanel">
+          <article class="slds-card">
+            <div class="slds-card__header slds-grid"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+              <div class="slds-media__figure"><span class="slds-icon_container slds-icon-custom-custom51"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom51"></use></svg></span></div>
+              <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Vaccinations</span> <span class="slds-text-body_small slds-text-color_weak" id="vax-count"></span></h2></div>
+            </header></div>
+            <div class="slds-card__body">
+              <table class="slds-table slds-table_cell-buffer slds-table_bordered" aria-label="Vaccinations">
+                <thead><tr class="slds-line-height_reset">
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Date</div></th>
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Vaccinated By</div></th>
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Vaccine Batch</div></th>
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Vaccine Expiry</div></th>
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Diluent Batch</div></th>
+                  <th scope="col"><div class="slds-truncate slds-text-title_caps">Diluent Expiry</div></th>
+                </tr></thead>
+                <tbody id="vax-tbody"></tbody>
+              </table>
+            </div>
+          </article>
+        </div>
+
+        <!-- Messages -->
+        <div id="t-messages" class="slds-tabs_default__content slds-hide" role="tabpanel">
+          <!-- Composer -->
+          <div class="slds-box slds-box_x-small slds-m-bottom_medium">
+            <div class="slds-form-element">
+              <div class="slds-form-element__control"><textarea class="slds-textarea" placeholder="Write a message to the vet or case officer..."></textarea></div>
+            </div>
+            <div class="slds-text-align_right slds-m-top_x-small"><button class="slds-button slds-button_brand">Share</button></div>
+          </div>
+
+          <!-- Feed -->
+          <ul class="slds-feed__list" id="messages-list"></ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: side panel -->
+    <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12">
+      <!-- Next Best Action -->
+      <article class="slds-card slds-m-bottom_small">
+        <div class="slds-card__header slds-grid"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__figure"><span class="slds-icon_container slds-icon-utility-touch_action"><svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#touch_action"></use></svg></span></div>
+          <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Next Best Action</span></h2></div>
+        </header></div>
+        <div class="slds-card__body slds-card__body_inner">
+          <p class="slds-text-body_regular slds-m-bottom_small" id="nba-text"></p>
+          <a class="slds-button slds-button_brand slds-button_stretch" id="nba-action" href="javascript:void(0);"></a>
+        </div>
+      </article>
+
+      <!-- Case summary -->
+      <article class="slds-card slds-m-bottom_small">
+        <div class="slds-card__header slds-grid"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Case summary</span></h2></div>
+        </header></div>
+        <div class="slds-card__body slds-card__body_inner">
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Case type</span><span class="apha-summary-row__value"><span class="apha-tag">Vaccination</span></span></div>
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Animal</span><span class="apha-summary-row__value" id="s-animal"></span></div>
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Priority</span><span class="apha-summary-row__value" id="s-priority"></span></div>
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Stage</span><span class="apha-summary-row__value"><span class="apha-tag" id="s-stage"></span></span></div>
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Assigned To</span><span class="apha-summary-row__value" id="s-assigned"></span></div>
+          <div class="apha-summary-row"><span class="apha-summary-row__label">Due</span><span class="apha-summary-row__value" id="s-due"></span></div>
+        </div>
+      </article>
+
+      <!-- Knowledge -->
+      <article class="slds-card">
+        <div class="slds-card__header slds-grid"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__figure"><span class="slds-icon_container slds-icon-utility-knowledge_base"><svg class="slds-icon slds-icon_small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#knowledge_base"></use></svg></span></div>
+          <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Knowledge</span></h2></div>
+        </header></div>
+        <div class="slds-card__body slds-card__body_inner">
+          <ul class="slds-list_vertical slds-has-dividers_around-space">
+            <li class="slds-item"><a href="javascript:void(0);">Bovine TB vaccination protocol (BCMS)</a></li>
+            <li class="slds-item"><a href="javascript:void(0);">Recording vaccine &amp; diluent batches</a></li>
+            <li class="slds-item"><a href="javascript:void(0);">Movement restrictions during testing</a></li>
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+  var cases  = {{ shared.cases | dump | safe }};
+  var stages = {{ shared.caseStages | dump | safe }};
+
+  function getC() { var m = location.search.match(/[?&]c=(\d+)/); var i = m ? parseInt(m[1],10) : 0; if (isNaN(i)||i<0||i>=cases.length) i = 0; return i; }
+  var kase = cases[getC()];
+  var animal = cattle[kase.tagIdx];
+  var baseVax = (animal.vax || []).slice();
+  var curIdx = Math.max(0, stages.indexOf(kase.stage));
+
+  // Base records + anything logged this session (read live from the store).
+  function currentVax() { return VaxStore.forTag(animal.tag).concat(baseVax); }
+
+  var guidance = {
+    "Scheduled":   { list: ["Confirm the appointment and assign a vet.", "Check the holding (CPH) details are correct."], action: { label: "Assign vet", href: "javascript:void(0);" } },
+    "Due":         { list: ["This vaccination is now due.", "Log the vaccination once it has been administered."], action: { label: "Log a Vaccination", inline: true } },
+    "Administered":{ list: ["Record the vaccine and diluent batch details.", "Confirm who administered the vaccination."], action: { label: "Log a Vaccination", inline: true } },
+    "Recorded":    { list: ["Case complete — no further action required."], action: null }
+  };
+
+  // Sample message feed between the case officer and the vet.
+  var messages = [
+    { who: 'Samantha Flint', role: 'Case Officer', initials: 'SF', time: '14 Jun 2026, 09:12', text: 'Scheduled the TB vaccination for 18 Jun and assigned A. Patel.' },
+    { who: 'A. Patel MRCVS', role: 'Vet', initials: 'AP', time: '14 Jun 2026, 11:40', text: "Confirmed — I'll attend on the 18th. Please make sure the animal is penned and the holding details are up to date." },
+    { who: 'Samantha Flint', role: 'Case Officer', initials: 'SF', time: '15 Jun 2026, 08:05', text: 'Holding confirmed at 12/345/6789 and diluent stock checked. All set for the visit.' },
+    { who: 'A. Patel MRCVS', role: 'Vet', initials: 'AP', time: '18 Jun 2026, 14:22', text: 'Vaccination administered. Batch 125007G recorded against the case.' }
+  ];
+  function renderMessages() {
+    document.getElementById('messages-list').innerHTML = messages.map(function (m) {
+      return '<li class="slds-feed__item slds-m-bottom_small"><article class="slds-post">' +
+        '<header class="slds-media"><div class="slds-media__figure"><span class="slds-avatar slds-avatar_circle slds-avatar_small"><abbr class="slds-avatar__initials slds-icon-standard-user" title="' + m.who + '">' + m.initials + '</abbr></span></div>' +
+        '<div class="slds-media__body"><p><strong>' + m.who + '</strong> <span class="slds-text-body_small slds-text-color_weak slds-m-left_xx-small">' + m.role + '</span></p>' +
+        '<p class="slds-text-body_small slds-text-color_weak">' + m.time + '</p></div></header>' +
+        '<div class="slds-post__content slds-text-longform slds-m-top_x-small"><p>' + m.text + '</p></div></article></li>';
+    }).join('');
+  }
+
+  function caseTab(link) {
+    var set = link.closest('[data-tabset]');
+    set.querySelectorAll('[role=tab]').forEach(function (a) { a.parentNode.classList.remove('slds-is-active'); });
+    link.parentNode.classList.add('slds-is-active');
+    set.querySelectorAll('[role=tabpanel]').forEach(function (p) { p.classList.add('slds-hide'); p.classList.remove('slds-show'); });
+    var panel = document.getElementById(link.getAttribute('data-tab'));
+    panel.classList.remove('slds-hide'); panel.classList.add('slds-show');
+  }
+
+  function renderPath() {
+    document.getElementById('path-nav').innerHTML = stages.map(function (st, i) {
+      var cls = i < curIdx ? 'slds-is-complete' : (i === curIdx ? 'slds-is-current slds-is-active' : 'slds-is-incomplete');
+      return '<li class="slds-path__item ' + cls + '" role="presentation">' +
+        '<a class="slds-path__link" href="javascript:void(0);" onclick="selectStage(' + i + ')" tabindex="-1">' +
+        '<span class="slds-path__stage"><svg class="slds-icon slds-icon_x-small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#check"></use></svg></span>' +
+        '<span class="slds-path__title">' + st + '</span></a></li>';
+    }).join('');
+    var stage = stages[curIdx];
+    var last = curIdx >= stages.length - 1;
+    document.getElementById('mark-label').textContent = last ? 'Stage Complete' : 'Mark Stage as Complete';
+    document.getElementById('mark-complete').disabled = last;
+    // guidance
+    var g = guidance[stage];
+    document.getElementById('g-stage').textContent = stage;
+    document.getElementById('g-list').innerHTML = g.list.map(function (t) { return '<li>' + t + '</li>'; }).join('');
+    wireAction(document.getElementById('g-action'), g.action);
+    // reflect stage in highlights + summary
+    document.getElementById('h-stage').textContent = stage;
+    document.getElementById('d-stage').textContent = stage;
+    document.getElementById('s-stage').textContent = stage;
+    // next best action
+    var nba = document.getElementById('nba-text');
+    nba.textContent = g.action ? (g.list[0] + ' Recommended next step:') : 'This case is complete. No action is recommended.';
+    wireAction(document.getElementById('nba-action'), g.action);
+  }
+
+  // Wire an action button: inline actions open the embedded flow panel.
+  function wireAction(el, action) {
+    if (!action) { el.style.display = 'none'; el.onclick = null; return; }
+    el.style.display = ''; el.textContent = action.label;
+    if (action.inline) { el.setAttribute('href', 'javascript:void(0);'); el.onclick = function (e) { e.preventDefault(); openFlow(); }; }
+    else { el.onclick = null; el.setAttribute('href', action.href || 'javascript:void(0);'); }
+  }
+
+  function renderHistory() {
+    var vax = currentVax();
+    var vt = document.getElementById('vax-tbody');
+    if (vax.length === 0) {
+      vt.innerHTML = '<tr><td colspan="6"><div class="slds-text-color_weak slds-p-around_small">No vaccination records.</div></td></tr>';
+    } else {
+      vt.innerHTML = vax.map(function (v) {
+        return '<tr><td><div class="slds-truncate">' + v.date + '</div></td><td><div class="slds-truncate">' + (v.by||'') + '</div></td>' +
+          '<td><div class="slds-truncate">' + (v.vaccineBatch||'') + '</div></td><td><div class="slds-truncate">' + (v.vaccineExpiry||'') + '</div></td>' +
+          '<td><div class="slds-truncate">' + (v.diluentBatch||'') + '</div></td><td><div class="slds-truncate">' + (v.diluentExpiry||'') + '</div></td></tr>';
+      }).join('');
+    }
+    document.getElementById('vax-count').textContent = '(' + vax.length + ')';
+    var logged = VaxStore.forTag(animal.tag);
+    if (logged.length) document.getElementById('d-last').textContent = logged[0].date;
+  }
+
+  // Inline flow panel (embedded Flow component equivalent).
+  function openFlow() {
+    document.getElementById('flow-frame').src = '/schedule-vaccination.html?i=' + kase.tagIdx + '&embed=1';
+    var panel = document.getElementById('inline-flow');
+    panel.classList.remove('slds-hide');
+    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function closeFlow() {
+    document.getElementById('inline-flow').classList.add('slds-hide');
+    document.getElementById('flow-frame').src = 'about:blank';
+  }
+  function caseTabById(id) { var link = document.querySelector('[data-tab="' + id + '"]'); if (link) caseTab(link); }
+  function priorityPill(p) { return '<span class="apha-pill apha-pill_' + (p === 'Urgent' ? 'red' : 'neutral') + '">' + p + '</span>'; }
+  function toggleSection(bar) { bar.classList.toggle('is-collapsed'); }
+  function onLogged() {
+    renderHistory();
+    if (curIdx < stages.length - 1) { curIdx++; renderPath(); }   // advance the case stage
+    document.getElementById('logged-toast').classList.remove('slds-hide');
+    caseTabById('t-history');
+    closeFlow();
+  }
+  window.addEventListener('message', function (e) {
+    var d = e.data || {};
+    if (d.type === 'vaxHeight') { document.getElementById('flow-frame').style.height = d.h + 'px'; }
+    else if (d.type === 'vaxLogged') { onLogged(); }
+    else if (d.type === 'vaxCancel') { closeFlow(); }
+  });
+  function selectStage(i) { curIdx = i; renderPath(); }
+  function markComplete() { if (curIdx < stages.length - 1) { curIdx++; renderPath(); } }
+
+  (function populate() {
+    setWorkspaceTab('Case ' + kase.ref, '/cases.html');
+    document.getElementById('h-ref').textContent = kase.ref;
+    document.getElementById('h-meta').textContent = 'Vaccination case • ' + animal.tag;
+    var hl = document.getElementById('h-log');
+    hl.setAttribute('href', 'javascript:void(0);');
+    hl.onclick = function (e) { e.preventDefault(); openFlow(); };
+    document.getElementById('h-animal').textContent = animal.tag;
+    document.getElementById('h-priority').innerHTML = priorityPill(kase.priority);
+    document.getElementById('h-assigned').textContent = kase.assignedTo;
+    document.getElementById('h-due').textContent = kase.due;
+    // details
+    document.getElementById('d-tag').textContent = animal.tag;
+    document.getElementById('d-breed').textContent = animal.breed;
+    document.getElementById('d-sex').textContent = animal.sex;
+    document.getElementById('d-dob').textContent = animal.dob;
+    document.getElementById('d-due').textContent = kase.due;
+    document.getElementById('d-last').textContent = animal.last;
+    document.getElementById('d-assigned').textContent = kase.assignedTo;
+    document.getElementById('d-holding').textContent = kase.holding;
+    document.getElementById('d-priority').innerHTML = priorityPill(kase.priority);
+    document.getElementById('d-requested').textContent = kase.requested;
+    // summary
+    document.getElementById('s-animal').textContent = animal.tag;
+    document.getElementById('s-priority').innerHTML = priorityPill(kase.priority);
+    document.getElementById('s-assigned').textContent = kase.assignedTo;
+    document.getElementById('s-due').textContent = kase.due;
+    renderHistory();
+    renderMessages();
+    renderPath();
+  })();
+</script>
+
+{% endblock %}

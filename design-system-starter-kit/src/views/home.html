@@ -1,0 +1,127 @@
+{#
+  Cattle vaccinations — Service Home (landing page)
+  You never browse 9.3M cattle. The landing page's job is to get the user to the
+  right CONTEXT fast: a holding (by CPH / farm / postcode) or a single animal
+  (by ear tag), plus a few scoped work queues and recent holdings.
+  Maps to: a Lightning App Home page (App Builder) — search + List Views +
+  report-chart tiles + recent records (all standard config).
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<style>
+  .hm-hero { background: #fff; border: 1px solid #e5e5e5; border-radius: 0.25rem; }
+  .hm-seg { display: inline-flex; border: 1px solid #c9c9c9; border-radius: 0.25rem; overflow: hidden; }
+  .hm-seg button { border: 0; background: #fff; padding: 0.4rem 0.9rem; font-size: 0.85rem; color: #514f4d; cursor: pointer; border-right: 1px solid #e3e3e3; }
+  .hm-seg button:last-child { border-right: 0; }
+  .hm-seg button.is-on { background: #008938; color: #fff; }
+  .hm-res { border-top: 1px solid #ededed; }
+  .hm-res:hover { background: #f3f9ff; }
+</style>
+
+<div class="slds-p-around_medium" style="max-width:68rem;">
+
+  <h1 class="slds-text-heading_large">Cattle vaccinations</h1>
+  <p class="slds-text-body_regular slds-text-color_weak slds-m-top_xx-small slds-m-bottom_medium">Check the bovine TB vaccination status of cattle and record vaccinations against a holding or individual animal.</p>
+
+  <!-- Find a holding / animal -->
+  <div class="hm-hero slds-p-around_medium slds-m-bottom_large">
+    <h2 class="slds-text-heading_small slds-m-bottom_x-small">Search for a holding or animal</h2>
+    <p class="slds-text-body_small slds-m-bottom_xx-small">You can search by:</p>
+    <ul class="slds-list_dotted slds-text-body_small slds-m-left_small slds-m-bottom_x-small">
+      <li>CPH</li>
+      <li>farm name</li>
+      <li>postcode</li>
+      <li>ear tag number</li>
+    </ul>
+    <p class="slds-text-body_small slds-m-bottom_medium">You can also combine search terms.</p>
+    <div class="slds-form-element" style="max-width:38rem;">
+      <label class="slds-form-element__label" for="f-q">Enter search terms</label>
+      <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left-right">
+        <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg></span>
+        <input type="search" id="f-q" class="slds-input" oninput="runSearch()" />
+        <button class="slds-button slds-button_icon slds-input__icon slds-input__icon_right" title="Clear" onclick="clearSearch()"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#clear"></use></svg><span class="slds-assistive-text">Clear</span></button>
+      </div>
+      <div class="slds-form-element__help">For example, 12/345 Hill Farm</div>
+    </div>
+
+    <!-- Results -->
+    <div id="search-results" class="slds-box slds-box_x-small slds-m-top_small slds-hide" style="background:#fff;"></div>
+  </div>
+
+  <!-- Recent holdings -->
+  <h2 class="slds-text-heading_small slds-m-bottom_x-small">Recent holdings</h2>
+  <div class="slds-box slds-box_x-small" style="background:#fff;">
+    <ul id="recent-list"></ul>
+  </div>
+
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+  var holdings = {{ shared.holdings | dump | safe }};
+  VaxStore.apply(cattle);
+  holdings.forEach(function (h) { h.herd = cattle.filter(function (c) { return c.cph === h.cph; }).length; });
+
+  function clearSearch() { document.getElementById('f-q').value = ''; runSearch(); document.getElementById('f-q').focus(); }
+
+  // Single global-style search box. The query is split into terms; EVERY term
+  // must appear (partial match) somewhere in the record — so terms can be combined,
+  // e.g. "12/345 Hill Farm". Holdings match across CPH/farm/postcode/county; animals
+  // match across ear tag/CPH. Results are grouped Holdings then Animals.
+  function runSearch() {
+    var q = document.getElementById('f-q').value.trim().toLowerCase();
+    var box = document.getElementById('search-results');
+    if (!q) { box.classList.add('slds-hide'); box.innerHTML = ''; return; }
+    box.classList.remove('slds-hide');
+
+    var terms = q.split(/\s+/);
+    function matchAll(hay) { return terms.every(function (t) { return hay.indexOf(t) !== -1; }); }
+
+    var hHits = holdings.filter(function (h) {
+      return matchAll((h.cph + ' ' + h.name + ' ' + (h.postcode || '') + ' ' + (h.county || '')).toLowerCase());
+    });
+    var aHits = cattle.filter(function (c) {
+      return matchAll((c.tag + ' ' + (c.cph || '')).toLowerCase());
+    });
+
+    function head(label, n) { return '<p class="slds-text-title_caps slds-text-color_weak slds-p-horizontal_small slds-p-top_x-small slds-p-bottom_xx-small">' + label + ' (' + n + ')</p>'; }
+    var html = '';
+    if (hHits.length) html += head('Holdings', hHits.length) + holdingRows(hHits);
+    if (aHits.length) html += head('Animals', aHits.length) + animalRows(aHits);
+    box.innerHTML = html || '<p class="slds-p-around_small slds-text-color_weak">No holdings or animals match.</p>';
+  }
+
+  function animalRows(hits) {
+    if (!hits.length) return '<p class="slds-p-around_small slds-text-color_weak">No animals match that ear tag.</p>';
+    return hits.map(function (c) {
+      var i = cattle.indexOf(c);
+      return '<div class="hm-res slds-p-vertical_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-center" style="cursor:pointer;" onclick="location.href=\'/cow.html?i=' + i + '\'">' +
+        '<div class="slds-grid slds-grid_vertical-align-center"><span class="slds-icon_container slds-icon-custom-custom19 slds-m-right_small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom19"></use></svg></span>' +
+        '<div><div class="slds-text-body_regular"><strong>' + c.tag + '</strong></div><div class="slds-text-body_small slds-text-color_weak">' + c.breed + ' · ' + c.sex + ' · CPH ' + c.cph + '</div></div></div>' +
+        '<span class="apha-pill apha-pill_' + ({ 'Vaccinated': 'green', 'Due Soon': 'amber', 'Overdue': 'red' }[c.status] || 'neutral') + '">' + c.status + '</span></div>';
+    }).join('');
+  }
+
+  // Shared renderer for a list of holding results.
+  function holdingRows(matches) {
+    if (!matches.length) return '<p class="slds-p-around_small slds-text-color_weak">No holdings match.</p>';
+    return matches.map(function (h) {
+      return '<div class="hm-res slds-p-vertical_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-center" style="cursor:pointer;" onclick="location.href=\'/holding.html?cph=' + encodeURIComponent(h.cph) + '\'">' +
+        '<div class="slds-grid slds-grid_vertical-align-center"><span class="slds-icon_container slds-icon-standard-account slds-m-right_small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg></span>' +
+        '<div><div class="slds-text-body_regular"><strong>' + h.name + '</strong></div><div class="slds-text-body_small slds-text-color_weak">CPH ' + h.cph + ' · ' + h.postcode + ' · ' + h.county + '</div></div></div>' +
+        '<span class="slds-text-body_small slds-text-color_weak">' + h.headCount + ' head</span></div>';
+    }).join('');
+  }
+
+  // Recent holdings (first few, as a stand-in for "recently viewed")
+  document.getElementById('recent-list').innerHTML = holdings.slice(0, 4).map(function (h) {
+    return '<li class="hm-res slds-p-vertical_x-small slds-grid slds-grid_align-spread slds-grid_vertical-align-center" style="cursor:pointer;" onclick="location.href=\'/holding.html?cph=' + encodeURIComponent(h.cph) + '\'">' +
+      '<div class="slds-grid slds-grid_vertical-align-center"><span class="slds-icon_container slds-icon-standard-account slds-m-right_small"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg></span>' +
+      '<div><div class="slds-text-body_regular">' + h.name + '</div><div class="slds-text-body_small slds-text-color_weak">CPH ' + h.cph + ' · ' + h.postcode + '</div></div></div>' +
+      '<span class="slds-text-body_small slds-text-color_weak">' + h.headCount + ' head</span></li>';
+  }).join('');
+</script>
+
+{% endblock %}

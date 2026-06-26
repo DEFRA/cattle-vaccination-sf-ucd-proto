@@ -1,0 +1,121 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 720" font-family="Arial, Helvetica, sans-serif">
+  <rect width="1140" height="720" fill="#ffffff"/>
+  <text x="24" y="34" font-size="20" font-weight="700" fill="#0b0c0c">Cheatsheet — Cattle Record Page</text>
+  <text x="24" y="54" font-size="12" fill="#5c5c5c">What a designer can change with standard Salesforce config (no code).</text>
+
+  <!-- ===================== WIREFRAME ===================== -->
+  <g>
+    <rect x="24" y="70" width="600" height="624" rx="6" fill="#f3f4f4" stroke="#c9c9c9"/>
+
+    <!-- green nav (compact) -->
+    <rect x="24" y="70" width="600" height="28" fill="#008938"/>
+    <text x="40" y="88" font-size="11" font-weight="700" fill="#ffffff">Bovine TB</text>
+    <text x="150" y="88" font-size="9" font-weight="700" fill="#ffffff">Cattle</text>
+    <text x="210" y="88" font-size="9" fill="#d6f0e6">Vaccinations</text>
+    <text x="290" y="88" font-size="9" fill="#d6f0e6">Reports</text>
+
+    <!-- back button -->
+    <rect x="40" y="110" width="120" height="20" rx="4" fill="#ffffff" stroke="#b9b9b9"/>
+    <text x="100" y="124" font-size="9" fill="#0b0c0c" text-anchor="middle">← Back to Cattle</text>
+
+    <!-- highlights panel -->
+    <rect x="40" y="142" width="568" height="96" rx="4" fill="#ffffff" stroke="#dddddd"/>
+    <rect x="54" y="154" width="30" height="30" rx="4" fill="#008938"/>
+    <text x="96" y="166" font-size="8" fill="#5c5c5c">Cattle</text>
+    <text x="96" y="182" font-size="14" font-weight="700" fill="#0b0c0c">UK582910001<tspan fill="#008938">25</tspan></text>
+    <rect x="430" y="156" width="74" height="22" rx="4" fill="#ffffff" stroke="#b9b9b9"/>
+    <text x="467" y="171" font-size="9" fill="#0b0c0c" text-anchor="middle">Edit</text>
+    <rect x="508" y="156" width="92" height="22" rx="4" fill="#008938"/>
+    <text x="554" y="171" font-size="8.5" font-weight="700" fill="#ffffff" text-anchor="middle">Log a Vaccination</text>
+    <!-- highlight fields -->
+    <line x1="54" y1="200" x2="594" y2="200" stroke="#eee"/>
+    <g font-size="8"><text x="60" y="214" fill="#5c5c5c">EAR TAG NUMBER</text><text x="200" y="214" fill="#5c5c5c">TB VAX</text><text x="320" y="214" fill="#5c5c5c">BREED</text><text x="440" y="214" fill="#5c5c5c">LAST VACCINATED</text></g>
+    <g font-size="9.5" fill="#0b0c0c"><text x="60" y="228">UK58291000125</text><text x="200" y="228">Vaccinated</text><text x="320" y="228">HER</text><text x="440" y="228">02 Apr 2026</text></g>
+
+    <!-- tabs -->
+    <text x="54" y="262" font-size="10" font-weight="700" fill="#0b0c0c">Details</text>
+    <rect x="50" y="268" width="46" height="2" fill="#008938"/>
+    <text x="120" y="262" font-size="10" fill="#5c5c5c">Vaccination History</text>
+
+    <!-- detail fields (two col) -->
+    <g font-size="8" fill="#5c5c5c"><text x="56" y="292">EAR TAG NUMBER</text><text x="330" y="292">DATE OF BIRTH</text><text x="56" y="330">BREED</text><text x="330" y="330">SEX</text></g>
+    <g font-size="9.5" fill="#0b0c0c"><text x="56" y="305">UK58291000125</text><text x="330" y="305">14 Mar 2021</text><text x="56" y="343">HER</text><text x="330" y="343">Female</text></g>
+    <line x1="56" y1="315" x2="290" y2="315" stroke="#eee"/><line x1="330" y1="315" x2="560" y2="315" stroke="#eee"/>
+    <line x1="56" y1="353" x2="290" y2="353" stroke="#eee"/><line x1="330" y1="353" x2="560" y2="353" stroke="#eee"/>
+
+    <!-- related list card -->
+    <rect x="40" y="372" width="568" height="300" rx="4" fill="#ffffff" stroke="#dddddd"/>
+    <rect x="54" y="384" width="22" height="22" rx="4" fill="#9050e9"/>
+    <text x="86" y="399" font-size="11" font-weight="700" fill="#0b0c0c">Vaccinations (3)</text>
+    <rect x="556" y="384" width="40" height="20" rx="4" fill="#ffffff" stroke="#b9b9b9"/>
+    <text x="576" y="398" font-size="8.5" fill="#0b0c0c" text-anchor="middle">New</text>
+    <!-- related table header -->
+    <rect x="54" y="416" width="540" height="20" fill="#fafafa" stroke="#ececec"/>
+    <g font-size="7.5" font-weight="700" fill="#444"><text x="62" y="429">DATE</text><text x="146" y="429">VACCINATED BY</text><text x="266" y="429">VACCINE BATCH</text><text x="372" y="429">VAC EXPIRY</text><text x="446" y="429">DILUENT BATCH</text><text x="540" y="429">DIL EXP</text></g>
+    <g font-size="8" fill="#0b0c0c">
+      <text x="62" y="450">02 Apr 26</text><text x="146" y="450">A. Patel MRCVS</text><text x="266" y="450">125007G</text><text x="372" y="450">05 2029</text><text x="446" y="450">37925B</text><text x="540" y="450">05 29</text>
+      <text x="62" y="470">10 Oct 25</text><text x="146" y="470">A. Patel MRCVS</text><text x="266" y="470">118842F</text><text x="372" y="470">11 2028</text><text x="446" y="470">33010A</text><text x="540" y="470">11 28</text>
+    </g>
+
+    <!-- annotation pins -->
+    <g font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">
+      <circle cx="100" cy="110" r="11" fill="#2e844a"/><text x="100" y="114">1</text>
+      <circle cx="54" cy="150" r="11" fill="#2e844a"/><text x="54" y="154">2</text>
+      <circle cx="508" cy="148" r="11" fill="#9a6a00"/><text x="508" y="152">3</text>
+      <circle cx="200" cy="208" r="11" fill="#ba0517"/><text x="200" y="212">4</text>
+      <circle cx="54" cy="256" r="11" fill="#2e844a"/><text x="54" y="260">5</text>
+      <circle cx="160" cy="300" r="11" fill="#2e844a"/><text x="160" y="304">6</text>
+      <circle cx="54" cy="378" r="11" fill="#2e844a"/><text x="54" y="382">7</text>
+      <circle cx="300" cy="416" r="11" fill="#2e844a"/><text x="300" y="420">8</text>
+    </g>
+  </g>
+
+  <!-- ===================== LEGEND ===================== -->
+  <g>
+    <text x="660" y="86" font-size="13" font-weight="700" fill="#0b0c0c">What you can change</text>
+    <circle cx="666" cy="104" r="6" fill="#2e844a"/><text x="678" y="108" font-size="10" fill="#444">Configurable</text>
+    <circle cx="788" cy="104" r="6" fill="#9a6a00"/><text x="800" y="108" font-size="10" fill="#444">Partial</text>
+    <circle cx="880" cy="104" r="6" fill="#ba0517"/><text x="892" y="108" font-size="10" fill="#444">Needs code</text>
+
+    <g font-size="11.5">
+      <circle cx="668" cy="138" r="10" fill="#2e844a"/><text x="668" y="142" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">1</text>
+      <text x="688" y="135" font-weight="700" fill="#0b0c0c">Back / navigation</text>
+      <text x="688" y="150" fill="#5c5c5c">Standard record navigation — appears automatically.</text>
+
+      <circle cx="668" cy="178" r="10" fill="#2e844a"/><text x="668" y="182" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">2</text>
+      <text x="688" y="175" font-weight="700" fill="#0b0c0c">Highlights panel (header fields)</text>
+      <text x="688" y="190" fill="#5c5c5c">Setup → Object Manager → Compact Layout (choose key fields).</text>
+
+      <circle cx="668" cy="218" r="10" fill="#9a6a00"/><text x="668" y="222" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">3</text>
+      <text x="688" y="215" font-weight="700" fill="#0b0c0c">Action buttons (Edit, Log a Vaccination)</text>
+      <text x="688" y="230" fill="#5c5c5c">Create Actions (Object Manager) + order. Colour is automatic.</text>
+
+      <circle cx="668" cy="258" r="10" fill="#ba0517"/><text x="668" y="262" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">4</text>
+      <text x="688" y="255" font-weight="700" fill="#0b0c0c">Status value</text>
+      <text x="688" y="270" fill="#5c5c5c">Plain text (picklist/formula). Coloured badge needs code.</text>
+
+      <circle cx="668" cy="298" r="10" fill="#2e844a"/><text x="668" y="302" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">5</text>
+      <text x="688" y="295" font-weight="700" fill="#0b0c0c">Tabs</text>
+      <text x="688" y="310" fill="#5c5c5c">Lightning App Builder → Tabs component (add/name/order).</text>
+
+      <circle cx="668" cy="338" r="10" fill="#2e844a"/><text x="668" y="342" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">6</text>
+      <text x="688" y="335" font-weight="700" fill="#0b0c0c">Detail fields &amp; layout</text>
+      <text x="688" y="350" fill="#5c5c5c">Dynamic Forms — fields, sections, columns, visibility rules.</text>
+
+      <circle cx="668" cy="378" r="10" fill="#2e844a"/><text x="668" y="382" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">7</text>
+      <text x="688" y="375" font-weight="700" fill="#0b0c0c">Related list (Vaccinations)</text>
+      <text x="688" y="390" fill="#5c5c5c">Page Layout → Related Lists; choose columns &amp; New action.</text>
+
+      <circle cx="668" cy="418" r="10" fill="#2e844a"/><text x="668" y="422" font-size="10" font-weight="700" fill="#fff" text-anchor="middle">8</text>
+      <text x="688" y="415" font-weight="700" fill="#0b0c0c">Related list columns</text>
+      <text x="688" y="430" fill="#5c5c5c">Choose &amp; order the fields shown in the related list table.</text>
+    </g>
+
+    <rect x="660" y="470" width="452" height="104" rx="6" fill="#fef6f6" stroke="#f3c4c4"/>
+    <text x="676" y="492" font-size="11.5" font-weight="700" fill="#ba0517">Can’t change without code</text>
+    <text x="676" y="510" font-size="11" fill="#5c5c5c">• Coloured status badges / conditional cell colouring</text>
+    <text x="676" y="526" font-size="11" fill="#5c5c5c">• Custom button colours, fonts, link colours</text>
+    <text x="676" y="542" font-size="11" fill="#5c5c5c">• Free-form placement outside the standard regions</text>
+    <text x="676" y="558" font-size="11" fill="#5c5c5c">• Editable inline grids for creating many child records</text>
+  </g>
+</svg>

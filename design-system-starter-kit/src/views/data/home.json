@@ -1,0 +1,4 @@
+// Data injected into home.html (merged with shared.json).
+{
+  "activeNav": "cases"
+}

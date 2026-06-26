@@ -1,0 +1,65 @@
+//
+// APHA / Defra theme — the prototype equivalent of Salesforce "Themes and Branding".
+// (Setup → Themes and Branding → New Theme.)
+//
+// ONLY the tokens that map to real, configurable theme settings are applied:
+//   • Brand Colour            → navigation bar background  (#008938 APHA green)
+//   • Page Background Colour   → workspace background        (#F3F4F4 light gray)
+// Active/hover states use the derived deep green (#005A2B), which a theme
+// generates automatically by darkening the brand colour.
+//
+// NOT applied — these are NOT configurable in Themes and Branding and would
+// require code / custom CSS (i.e. "hacking"), so they are intentionally left
+// at Salesforce defaults:
+//   ✗ Hyperlink colour (#1D70B8 GOV.UK blue) — links stay standard SF blue
+//   ✗ Body text colour (#0B0C0C)             — stays standard SLDS text colour
+//   ✗ Zebra stripe colour (#F8F8F8)          — standard SLDS table striping
+//   ✗ Divider/border colour (#B1B4B6)        — standard SLDS borders
+//   ✗ Font family / font style               — not a theme setting in Salesforce
+//
+
+$apha-green: #008938;
+$defra-deep-green: #005a2b;
+$apha-page-bg: #f3f4f4;
+
+// --- Brand Colour: navigation (context) bar ---
+.slds-context-bar {
+  background-color: $apha-green;
+  border-bottom-color: $defra-deep-green;
+}
+
+.slds-context-bar__app-name,
+.slds-context-bar__label-action {
+  color: #fff;
+}
+
+// Hover + active states (auto-derived deep green)
+.slds-context-bar__item:hover,
+.slds-context-bar__item.slds-is-active,
+.slds-context-bar__label-action:hover {
+  background-color: $defra-deep-green;
+  color: #fff;
+}
+
+.slds-context-bar__item.slds-is-active {
+  border-bottom-color: #fff;
+}
+
+// Icons / buttons sitting in the nav bar render white on the brand colour
+.slds-context-bar .slds-button_icon,
+.slds-context-bar .slds-icon-waffle_container,
+.slds-context-bar .slds-icon-waffle {
+  color: #fff;
+}
+
+// App Launcher waffle: its 9 squares use background-colour, so flip them to
+// white too — matches Salesforce auto-contrast on a dark brand colour.
+.slds-context-bar .slds-icon-waffle span {
+  background-color: #fff;
+}
+
+// --- Page Background Colour: workspace ---
+body,
+.app-wrapper {
+  background-color: $apha-page-bg;
+}

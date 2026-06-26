@@ -1,0 +1,15 @@
+//
+// Cattle Vaccination prototype — minimal helpers only.
+// Everything else is standard SLDS.
+//
+
+// Simulate the native list-view row hover + click-to-open behaviour that real
+// Salesforce list views provide out of the box. No custom status colours or
+// other non-configurable styling — the prototype stays 100% no-code.
+.cattle-row {
+  cursor: pointer;
+
+  &:hover {
+    background-color: $color-background-row-hover;
+  }
+}

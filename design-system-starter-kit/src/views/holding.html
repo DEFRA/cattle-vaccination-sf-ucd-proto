@@ -1,0 +1,286 @@
+{#
+  Holding (CPH) record — the scoped work surface.
+  Highlights (CPH/postcode/county/head count) + the herd related list (just this
+  holding's cattle) with select + "Mark N as vaccinated". You act on a small,
+  relevant set — never the global cattle object.
+#}
+{% extends "_template.html" %}
+
+{% block content %}
+
+<div class="slds-p-around_medium">
+
+  <!-- Success toast after a mass mark-as-vaccinated on this herd -->
+  <div id="bulk-toast" class="slds-notify_container slds-is-relative slds-m-bottom_small slds-hide">
+    <div class="slds-notify slds-notify_toast slds-theme_success" role="status">
+      <span class="slds-assistive-text">success</span>
+      <span class="slds-icon_container slds-icon-utility-success slds-m-right_small slds-no-flex slds-align-top"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#success"></use></svg></span>
+      <div class="slds-notify__content"><h2 class="slds-text-heading_small" id="bulk-toast-msg">Cattle marked as vaccinated.</h2></div>
+      <div class="slds-notify__close"><button class="slds-button slds-button_icon slds-button_icon-inverse" title="Close" onclick="document.getElementById('bulk-toast').classList.add('slds-hide')"><svg class="slds-button__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use></svg><span class="slds-assistive-text">Close</span></button></div>
+    </div>
+  </div>
+
+  <!-- Back -->
+  <div class="slds-m-bottom_small">
+    <a href="/home.html" class="slds-button slds-button_neutral">
+      <svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#back"></use></svg>Back to search
+    </a>
+  </div>
+
+  <!-- Highlights panel -->
+  <div class="slds-page-header slds-page-header_record-home">
+    <div class="slds-page-header__row">
+      <div class="slds-page-header__col-title">
+        <div class="slds-media">
+          <div class="slds-media__figure">
+            <span class="slds-icon_container slds-icon-standard-account" title="Holding"><svg class="slds-icon slds-page-header__icon" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg></span>
+          </div>
+          <div class="slds-media__body">
+            <div class="slds-page-header__name"><div class="slds-page-header__name-title"><h1><span>Holding</span><span class="slds-page-header__title slds-truncate" id="h-name">Holding</span></h1></div></div>
+            <p class="slds-page-header__name-meta" id="h-meta"></p>
+          </div>
+        </div>
+      </div>
+      <div class="slds-page-header__col-actions">
+        <div class="slds-page-header__controls"><div class="slds-page-header__control">
+          <ul class="slds-button-group-list"><li><button class="slds-button slds-button_neutral">Edit</button></li></ul>
+        </div></div>
+      </div>
+    </div>
+    <div class="slds-page-header__row slds-page-header__row_gutters">
+      <div class="slds-page-header__col-details">
+        <ul class="slds-page-header__detail-row">
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">CPH</div><div class="slds-truncate" id="h-cph"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Postcode</div><div class="slds-truncate" id="h-pc"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">County</div><div class="slds-truncate" id="h-county"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Office</div><div class="slds-truncate" id="h-office"></div></li>
+          <li class="slds-page-header__detail-block"><div class="slds-text-title slds-truncate">Head count</div><div class="slds-truncate" id="h-head"></div></li>
+          <li class="slds-page-header__detail-block slds-hide" id="hb-tb"><div class="slds-text-title slds-truncate">TB status</div><div class="slds-truncate" id="h-tb"></div></li>
+          <li class="slds-page-header__detail-block slds-hide" id="hb-next"><div class="slds-text-title slds-truncate">Next skin test</div><div class="slds-truncate" id="h-next"></div></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Body: herd (left) + holding summary (right) -->
+  <div class="slds-grid slds-gutters slds-wrap slds-m-top_medium">
+
+    <!-- LEFT: herd related list -->
+    <div class="slds-col slds-size_1-of-1 slds-large-size_8-of-12" id="herd-col">
+      <article class="slds-card" id="herd-card">
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure"><span class="slds-icon_container slds-icon-custom-custom19"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom19"></use></svg></span></div>
+            <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Herd</span> <span class="slds-text-body_small slds-text-color_weak" id="herd-count"></span></h2>
+              <p class="slds-text-body_small slds-text-color_weak">Cattle at this holding</p>
+            </div>
+            <div class="slds-no-flex">
+              <button id="bulk-vax-btn" class="slds-button slds-button_neutral" onclick="markSelected()" disabled>Mark as vaccinated</button>
+            </div>
+          </header>
+        </div>
+
+        <!-- Filter tabs -->
+        <div class="slds-card__body slds-p-horizontal_small slds-border_bottom">
+          <ul class="slds-tabs_default__nav" role="tablist" id="herd-filters">
+            <li class="slds-tabs_default__item slds-is-active" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="All" onclick="setHerdFilter(this)">All herd</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="Vaccinated" onclick="setHerdFilter(this)">Vaccinated</a></li>
+            <li class="slds-tabs_default__item" role="presentation"><a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" data-filter="Unvaccinated" onclick="setHerdFilter(this)">Unvaccinated</a></li>
+          </ul>
+        </div>
+
+        <div class="slds-card__body slds-p-horizontal_small slds-m-vertical_small">
+          <div class="slds-form-element" style="max-width:18rem;">
+            <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_left">
+              <span class="slds-icon_container slds-icon-utility-search slds-input__icon slds-input__icon_left"><svg class="slds-icon slds-icon_x-small slds-icon-text-default" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#search"></use></svg></span>
+              <input type="search" class="slds-input" placeholder="Search this herd..." oninput="filterText(this.value)" />
+            </div>
+          </div>
+        </div>
+        <div class="slds-card__body">
+          <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_fixed-layout slds-table_striped apha-table" role="grid" aria-label="Herd">
+            <thead>
+              <tr class="slds-line-height_reset">
+                <th class="slds-text-align_right" scope="col" style="width:3.25rem;"><div class="slds-th__action slds-th__action_form"><div class="slds-checkbox"><input type="checkbox" id="select-all" onchange="toggleAll(this)" tabindex="-1" /><label class="slds-checkbox__label" for="select-all"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select All</span></label></div></div></th>
+                {% for col in [['tag','Ear Tag Number'],['eligibility','Eligibility'],['status','TB Vax'],['dob','DOB'],['sex','Sex'],['breed','Breed']] %}
+                <th aria-sort="none" class="slds-is-sortable{% if col[0] == 'tag' %} slds-text-align_right{% endif %}" scope="col" id="th-{{ col[0] }}">
+                  <a class="slds-th__action slds-text-link_reset" href="javascript:void(0);" role="button" tabindex="0" onclick="sortBy('{{ col[0] }}')">
+                    <div class="slds-grid slds-grid_vertical-align-center slds-has-flexi-truncate{% if col[0] == 'tag' %} slds-grid_align-end{% endif %}"><span class="slds-truncate slds-text-title_caps" title="{{ col[1] }}">{{ col[1] }}</span><span class="slds-icon_container"><svg class="slds-icon slds-icon-text-default slds-is-sortable__icon" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#chevrondown"></use></svg></span></div>
+                  </a>
+                </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody id="herd-tbody"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <!-- Inline mass flow — shown in place of the herd list (embedded Flow component) -->
+      <div id="mass-flow" class="slds-card slds-card_boundary slds-hide">
+        <div class="slds-card__header slds-grid">
+          <header class="slds-media slds-media_center slds-has-flexi-truncate">
+            <div class="slds-media__figure"><span class="slds-icon_container slds-icon-custom-custom51"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/custom-sprite/svg/symbols.svg#custom51"></use></svg></span></div>
+            <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Log a Vaccination</span> <span class="slds-text-body_small slds-text-color_weak" id="mass-count"></span></h2></div>
+            <div class="slds-no-flex"><button class="slds-button slds-button_neutral" onclick="closeMassFlow()"><svg class="slds-button__icon slds-button__icon_left" aria-hidden="true"><use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#back"></use></svg>Back to herd list</button></div>
+          </header>
+        </div>
+        <div class="slds-card__body"><iframe id="mass-frame" title="Log a Vaccination" style="width:100%;height:720px;border:0;display:block;"></iframe></div>
+      </div>
+    </div>
+
+    <!-- RIGHT: holding details (case-summary style; only fields not already in the header) -->
+    <div class="slds-col slds-size_1-of-1 slds-large-size_4-of-12" id="summary-col">
+      <article class="slds-card">
+        <div class="slds-card__header slds-grid"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+          <div class="slds-media__figure"><span class="slds-icon_container slds-icon-standard-account"><svg class="slds-icon slds-icon_small" aria-hidden="true"><use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#account"></use></svg></span></div>
+          <div class="slds-media__body"><h2 class="slds-card__header-title"><span>Holding details</span></h2></div>
+        </header></div>
+        <div class="slds-card__body slds-card__body_inner" id="summary-body"></div>
+      </article>
+    </div>
+  </div>
+</div>
+
+<script>
+  var cattle = {{ shared.cattle | dump | safe }};
+  var holdings = {{ shared.holdings | dump | safe }};
+  VaxStore.apply(cattle);
+
+  function getCph() { var m = location.search.match(/[?&]cph=([^&]+)/); return m ? decodeURIComponent(m[1]) : (holdings[0] && holdings[0].cph); }
+  var cph = getCph();
+  var holding = holdings.filter(function (h) { return h.cph === cph; })[0] || holdings[0];
+  var herd = cattle.filter(function (c) { return c.cph === holding.cph; });
+
+  // Flag ear tags that share their last 4 digits with another animal on this holding.
+  var last4Counts = {};
+  herd.forEach(function (c) { var k = c.tag.slice(-4); last4Counts[k] = (last4Counts[k] || 0) + 1; });
+
+  var textq = '', filter = 'All', sortKey = null, sortDir = 1;
+
+  function statusBadge(s) { var m = { 'Vaccinated': 'green', 'Due Soon': 'amber', 'Overdue': 'red', 'Not Vaccinated': 'neutral' }; return '<span class="apha-pill apha-pill_' + (m[s] || 'neutral') + '">' + s + '</span>'; }
+  function eligibility(c) {
+    if (c.status === 'Vaccinated') return 'Vaccinated';
+    if (c.status === 'Overdue') return 'Revaccination overdue';
+    return 'Revaccination due ' + (c.due || 'n/a'); // Due Soon / not yet vaccinated
+  }
+  function fmtTag(t) {
+    var tail = t.slice(-4), dup = (last4Counts[tail] || 0) > 1;
+    return t.slice(0, -4) + '<strong' + (dup ? ' style="text-decoration:underline;text-decoration-thickness:2px;" title="Another animal on this holding ends in ' + tail + '"' : '') + '>' + tail + '</strong>';
+  }
+
+  function filterText(q) { textq = (q || '').toLowerCase(); render(); }
+  function setHerdFilter(link) {
+    filter = link.getAttribute('data-filter');
+    document.querySelectorAll('#herd-filters .slds-tabs_default__item').forEach(function (li) { li.classList.remove('slds-is-active'); });
+    link.parentNode.classList.add('slds-is-active');
+    render();
+  }
+  function sortBy(key) {
+    if (sortKey === key) sortDir = -sortDir; else { sortKey = key; sortDir = 1; }
+    ['tag','eligibility','status','dob','sex','breed'].forEach(function (k) { var th = document.getElementById('th-' + k); th.setAttribute('aria-sort', 'none'); th.classList.remove('slds-is-sorted','slds-is-sorted_asc','slds-is-sorted_desc'); });
+    var th = document.getElementById('th-' + key); th.classList.add('slds-is-sorted', sortDir === 1 ? 'slds-is-sorted_asc' : 'slds-is-sorted_desc'); th.setAttribute('aria-sort', sortDir === 1 ? 'ascending' : 'descending');
+    render();
+  }
+  function sortVal(c, key) {
+    if (key === 'tag') return c.tag.slice(-4);           // sort by the last 4 digits (how cattle are referred to)
+    if (key === 'eligibility') return eligibility(c).toLowerCase();
+    if (key === 'dob') return new Date(c.dob).getTime();
+    return (c[key] || '').toString().toLowerCase();
+  }
+
+  function render() {
+    var rows = herd.filter(function (c) {
+      var okF = filter === 'All' || (filter === 'Vaccinated' ? c.status === 'Vaccinated' : c.status !== 'Vaccinated');
+      return okF && (!textq || c.tag.toLowerCase().indexOf(textq) !== -1);
+    });
+    if (sortKey) rows = rows.slice().sort(function (a, b) { var va = sortVal(a, sortKey), vb = sortVal(b, sortKey); return va < vb ? -sortDir : va > vb ? sortDir : 0; });
+    document.getElementById('herd-tbody').innerHTML = rows.map(function (c) {
+      var idx = cattle.indexOf(c);
+      return '<tr class="cattle-row" aria-selected="false" onclick="location.href=\'/cow.html?i=' + idx + '\'">' +
+        '<td class="slds-text-align_right" role="gridcell" onclick="event.stopPropagation()"><div class="slds-checkbox"><input type="checkbox" id="cb-' + idx + '" onchange="rowSelect(this)" tabindex="-1" /><label class="slds-checkbox__label" for="cb-' + idx + '"><span class="slds-checkbox_faux"></span><span class="slds-form-element__label slds-assistive-text">Select</span></label></div></td>' +
+        '<th scope="row" data-label="Ear Tag Number" class="slds-text-align_right"><div class="slds-truncate" style="font-variant-numeric:tabular-nums;"><a href="/cow.html?i=' + idx + '">' + fmtTag(c.tag) + '</a></div></th>' +
+        '<td data-label="Eligibility"><div class="slds-truncate" title="' + eligibility(c) + '">' + eligibility(c) + '</div></td>' +
+        '<td data-label="TB Vax"><div class="slds-truncate">' + statusBadge(c.status) + '</div></td>' +
+        '<td data-label="DOB"><div class="slds-truncate">' + (c.dob || '') + '</div></td>' +
+        '<td data-label="Sex"><div class="slds-truncate">' + (c.sex || '') + '</div></td>' +
+        '<td data-label="Breed"><div class="slds-truncate">' + c.breed + '</div></td>' +
+      '</tr>';
+    }).join('');
+    document.getElementById('herd-count').textContent = '(' + rows.length + ' of ' + holding.headCount + ')';
+    var sa = document.getElementById('select-all'); if (sa) { sa.checked = false; sa.indeterminate = false; }
+    updateBulkButton();
+  }
+
+  function toggleAll(box) { document.querySelectorAll('#herd-tbody input[type=checkbox]').forEach(function (cb) { cb.checked = box.checked; cb.closest('tr').setAttribute('aria-selected', box.checked); }); box.indeterminate = false; updateBulkButton(); }
+  function rowSelect(box) { box.closest('tr').setAttribute('aria-selected', box.checked); var all = Array.prototype.slice.call(document.querySelectorAll('#herd-tbody input[type=checkbox]')); var ch = all.filter(function (cb) { return cb.checked; }).length; var sa = document.getElementById('select-all'); sa.checked = ch === all.length; sa.indeterminate = ch > 0 && ch < all.length; updateBulkButton(); }
+
+  function selectedIdxs() { return Array.prototype.slice.call(document.querySelectorAll('#herd-tbody input[type=checkbox]')).filter(function (cb) { return cb.checked; }).map(function (cb) { return parseInt(cb.id.replace('cb-', ''), 10); }); }
+  function updateBulkButton() { var n = selectedIdxs().length, b = document.getElementById('bulk-vax-btn'); if (!b) return; b.disabled = n === 0; b.textContent = n ? ('Mark ' + n + ' as vaccinated') : 'Mark as vaccinated'; }
+  var pendingCount = 0;
+  function markSelected() {
+    var tags = selectedIdxs().map(function (i) { return cattle[i].tag; });
+    if (!tags.length) return;
+    try { sessionStorage.setItem('bovinetb_selection', JSON.stringify(tags)); } catch (e) {}
+    pendingCount = tags.length;
+    openMassFlow();
+  }
+
+  // Run the flow inline where the herd list was; the Holding summary stays on the right.
+  function openMassFlow() {
+    document.getElementById('mass-count').textContent = '(' + pendingCount + ' selected)';
+    document.getElementById('mass-frame').src = '/schedule-vaccination.html?mass=1&embed=1';
+    document.getElementById('herd-card').classList.add('slds-hide');
+    document.getElementById('mass-flow').classList.remove('slds-hide');
+    document.getElementById('mass-flow').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  function closeMassFlow() {
+    document.getElementById('mass-flow').classList.add('slds-hide');
+    document.getElementById('mass-frame').src = 'about:blank';
+    document.getElementById('herd-card').classList.remove('slds-hide');
+  }
+  function refreshHerd() { herd.forEach(function (c) { if (VaxStore.forTag(c.tag).length) c.status = 'Vaccinated'; }); render(); }
+
+  window.addEventListener('message', function (e) {
+    var d = e.data || {};
+    if (d.type === 'vaxHeight') { document.getElementById('mass-frame').style.height = d.h + 'px'; }
+    else if (d.type === 'vaxLogged') {
+      refreshHerd();
+      document.getElementById('bulk-toast-msg').textContent = (d.count || pendingCount) + ' cattle marked as vaccinated.';
+      document.getElementById('bulk-toast').classList.remove('slds-hide');
+      closeMassFlow();
+    } else if (d.type === 'vaxCancel') { closeMassFlow(); }
+  });
+
+  (function populate() {
+    setWorkspaceTab(holding.name, '/home.html');
+    document.getElementById('h-name').textContent = holding.name;
+    document.getElementById('h-meta').textContent = 'Holding • ' + (holding.address || ('CPH ' + holding.cph));
+    document.getElementById('h-cph').textContent = holding.cph;
+    document.getElementById('h-pc').textContent = holding.postcode;
+    document.getElementById('h-county').textContent = holding.county;
+    document.getElementById('h-office').textContent = holding.office;
+    document.getElementById('h-head').textContent = holding.headCount;
+    if (holding.tbStatus) { document.getElementById('h-tb').textContent = holding.tbStatus; document.getElementById('hb-tb').classList.remove('slds-hide'); }
+    if (holding.nextSkinTest) { document.getElementById('h-next').innerHTML = holding.nextSkinTest + (holding.nextSkinTestState ? ' <span class="apha-pill apha-pill_red">' + holding.nextSkinTestState + '</span>' : ''); document.getElementById('hb-next').classList.remove('slds-hide'); }
+
+    // Right-hand "Holding details" — only fields NOT already shown in the header
+    // highlights (no CPH / county / office / head count / TB status / next skin test).
+    var fields = [['Address', 'address'], ['Type of cattle', 'type'], ['Bulls', 'bulls'], ['Contact', 'contact'], ['Phone number', 'phone'], ['Last TB test', 'lastTestDate'], ['Last test type', 'lastTestType'], ['Risk area', 'riskArea'], ['Test interval', 'testInterval']];
+    var present = fields.filter(function (f) { return holding[f[1]] !== undefined && holding[f[1]] !== ''; });
+    if (present.length) {
+      document.getElementById('summary-body').innerHTML = present.map(function (f) {
+        return '<div class="apha-summary-row"><span class="apha-summary-row__label">' + f[0] + '</span><span class="apha-summary-row__value">' + String(holding[f[1]]) + '</span></div>';
+      }).join('');
+    } else {
+      // Nothing extra to show — hide the panel and let the herd use the full width.
+      document.getElementById('summary-col').classList.add('slds-hide');
+      document.getElementById('herd-col').classList.remove('slds-large-size_8-of-12');
+    }
+    var m = window.location.search.match(/[?&]logged=(\d+)/);
+    if (m) { document.getElementById('bulk-toast-msg').textContent = m[1] + ' cattle marked as vaccinated.'; document.getElementById('bulk-toast').classList.remove('slds-hide'); }
+    render();
+  })();
+</script>
+
+{% endblock %}
